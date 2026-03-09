@@ -2036,7 +2036,8 @@ async function pushCasosToSheets() {
 
 function importCasosFromSheets(rows) {
   if (rows.length < 2) return;
-  const headers = rows[0].map(h => h.toLowerCase().trim());
+  const headers = rows[0].map(normalizeHeader); // quita tildes y espacios
+  console.log('CASOS headers normalizados:', headers);
   const newCasos = [];
   for (let i = 1; i < rows.length; i++) {
     const row = rows[i];
@@ -2059,10 +2060,13 @@ function importCasosFromSheets(rows) {
       estado: c['estado'] || 'Activo',
       abogado: c['abogado'] || DB.config.abogadoPrincipal || '',
       juzgado: c['juzgado'] || '',
-      radicado: c['radicado'] || '',
+      // "RADICACIÓN LARGA" → normalizeHeader → "radicacionlarga"
+      radicado: c['radicacionlarga'] || c['radicacion'] || c['radicado'] || '',
       ciudad: c['ciudad'] || DB.config.ciudad || 'BOGOTÁ D.C.',
-      notas: c['notas'] || '',
-      fechaRadicacion: c['fecharadicacion'] || '',
+      notas: c['notas'] || c['observaciones'] || '',
+      fechaRadicacion: c['fecharadicacion'] || c['fecharadicado'] || '',
+      proxAudiencia: c['proxaudiencia'] || c['proximaaudiencia'] || c['audiencia'] || '',
+      cuantia: c['cuantia'] || c['cuantias'] || '',
     };
     if (caso.demandante) newCasos.push(caso);
   }
