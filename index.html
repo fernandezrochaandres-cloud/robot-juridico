@@ -1,0 +1,2934 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Robot Jurídico — Fernández Abogados</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+  :root {
+    --ink: #0f1117;
+    --parchment: #f5f0e8;
+    --gold: #c8973a;
+    --gold-light: #e8c97a;
+    --gold-pale: #f9f0dc;
+    --cream: #faf7f2;
+    --steel: #2a3142;
+    --mist: #8892a0;
+    --border: #d9cfc0;
+    --red: #c0392b;
+    --green: #1a6b47;
+    --blue: #1a3a6b;
+    --sidebar-w: 240px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--parchment);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ═══ TOPBAR ═══ */
+  .topbar {
+    background: var(--steel);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    height: 56px;
+    border-bottom: 3px solid var(--gold);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .topbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .topbar-brand .icon {
+    width: 32px; height: 32px;
+    background: var(--gold);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+  .topbar-brand h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    color: #fff;
+  }
+  .topbar-brand span {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--gold-light);
+    margin-left: 6px;
+  }
+  .topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .gdrive-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--gold-light);
+  }
+  .gdrive-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #666;
+    transition: background 0.3s;
+  }
+  .gdrive-dot.connected { background: #4caf50; }
+  .gdrive-dot.error { background: var(--red); }
+
+  .btn-gdrive {
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    padding: 5px 14px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .btn-gdrive:hover { background: var(--gold); color: var(--steel); }
+
+  /* ═══ LAYOUT ═══ */
+  .app-body {
+    display: flex;
+    flex: 1;
+  }
+
+  /* ═══ SIDEBAR ═══ */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: var(--ink);
+    min-height: calc(100vh - 56px);
+    padding: 20px 0;
+    flex-shrink: 0;
+    position: sticky;
+    top: 56px;
+    height: calc(100vh - 56px);
+    overflow-y: auto;
+  }
+  .sidebar-section {
+    padding: 0 16px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    margin-bottom: 4px;
+  }
+  .sidebar-section-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--mist);
+    padding: 12px 4px 8px;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #a8b0bc;
+    font-size: 14px;
+    font-weight: 400;
+    transition: all 0.15s;
+    text-decoration: none;
+    margin-bottom: 2px;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.08); color: #fff; }
+  .nav-item.active { background: var(--gold); color: var(--ink); font-weight: 500; }
+  .nav-item .nav-icon { font-size: 16px; width: 20px; text-align: center; }
+  .nav-badge {
+    margin-left: auto;
+    background: var(--red);
+    color: #fff;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 1px 6px;
+  }
+
+  /* ═══ MAIN ═══ */
+  .main {
+    flex: 1;
+    overflow-y: auto;
+    background: var(--cream);
+  }
+
+  .page {
+    display: none;
+    padding: 32px 36px;
+    max-width: 1100px;
+    animation: fadeIn 0.2s ease;
+  }
+  .page.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+  .page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--border);
+  }
+  .page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--steel);
+  }
+  .page-subtitle {
+    font-size: 13px;
+    color: var(--mist);
+    margin-top: 4px;
+  }
+
+  /* ═══ CARDS ═══ */
+  .card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--steel);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+    margin-left: 8px;
+  }
+
+  /* ═══ STATS BAR ═══ */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .stat-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    border-top: 3px solid transparent;
+  }
+  .stat-card.gold { border-top-color: var(--gold); }
+  .stat-card.blue { border-top-color: var(--blue); }
+  .stat-card.green { border-top-color: var(--green); }
+  .stat-card.red { border-top-color: var(--red); }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--steel);
+  }
+  .stat-label {
+    font-size: 12px;
+    color: var(--mist);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 4px;
+  }
+
+  /* ═══ TABLE ═══ */
+  .table-wrap {
+    overflow-x: auto;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+  thead {
+    background: var(--steel);
+    color: #fff;
+  }
+  thead th {
+    padding: 11px 14px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+  }
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+  }
+  tbody tr:hover { background: var(--gold-pale); }
+  tbody td {
+    padding: 11px 14px;
+    color: var(--ink);
+  }
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .tag-active { background: #d4edda; color: #1a6b47; }
+  .tag-pending { background: #fff3cd; color: #856404; }
+  .tag-closed { background: #e2e3e5; color: #495057; }
+  .tag-urgent { background: #f8d7da; color: #c0392b; }
+
+  /* ═══ BUTTONS ═══ */
+  .btn {
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-primary { background: var(--steel); color: #fff; }
+  .btn-primary:hover { background: var(--gold); color: var(--ink); }
+  .btn-gold { background: var(--gold); color: var(--ink); font-weight: 600; }
+  .btn-gold:hover { background: var(--gold-light); }
+  .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--ink); }
+  .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+  .btn-danger { background: var(--red); color: #fff; }
+  .btn-danger:hover { opacity: 0.85; }
+  .btn-sm { padding: 5px 12px; font-size: 12px; }
+
+  /* ═══ DOCS GRID ═══ */
+  .docs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .doc-btn {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 16px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .doc-btn:hover {
+    border-color: var(--gold);
+    background: var(--gold-pale);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(200,151,58,0.15);
+  }
+  .doc-btn .doc-icon { font-size: 28px; margin-bottom: 8px; }
+  .doc-btn .doc-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--steel);
+    line-height: 1.3;
+  }
+  .doc-btn .doc-desc {
+    font-size: 11px;
+    color: var(--mist);
+    margin-top: 4px;
+  }
+
+  /* ═══ FORM ═══ */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .form-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .form-grid.cols-1 { grid-template-columns: 1fr; }
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+  .form-group.span-2 { grid-column: span 2; }
+  label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: var(--mist);
+    text-transform: uppercase;
+  }
+  input, select, textarea {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    background: #fff;
+    transition: border 0.15s;
+    width: 100%;
+  }
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(200,151,58,0.12);
+  }
+  textarea { resize: vertical; min-height: 90px; }
+
+  /* ═══ CALENDAR ═══ */
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+  }
+  .cal-day-header {
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--mist);
+    padding: 6px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .cal-day {
+    aspect-ratio: 1;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 13px;
+    position: relative;
+    background: #fff;
+    border: 1px solid transparent;
+    transition: all 0.1s;
+  }
+  .cal-day:hover { border-color: var(--gold); background: var(--gold-pale); }
+  .cal-day.today { background: var(--steel); color: #fff; font-weight: 600; }
+  .cal-day.has-event::after {
+    content: '';
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--gold);
+    position: absolute;
+    bottom: 4px;
+  }
+  .cal-day.other-month { color: #ccc; background: transparent; }
+
+  /* ═══ CALENDAR EVENTS LIST ═══ */
+  .event-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: #fff;
+    margin-bottom: 8px;
+  }
+  .event-date-box {
+    min-width: 44px;
+    height: 44px;
+    background: var(--steel);
+    color: #fff;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .event-date-box .day { font-size: 18px; font-weight: 700; line-height: 1; }
+  .event-color { width: 4px; height: 36px; border-radius: 2px; flex-shrink: 0; }
+
+  /* ═══ TASK LIST ═══ */
+  .task-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: #fff;
+    margin-bottom: 8px;
+    transition: all 0.15s;
+  }
+  .task-item:hover { border-color: var(--gold); }
+  .task-checkbox {
+    width: 18px; height: 18px;
+    border: 2px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .task-checkbox:hover { border-color: var(--gold); }
+  .task-checkbox.done { background: var(--green); border-color: var(--green); color: #fff; font-size: 11px; }
+  .task-text { flex: 1; font-size: 14px; }
+  .task-text.done-text { text-decoration: line-through; color: var(--mist); }
+  .task-meta { font-size: 11px; color: var(--mist); margin-top: 1px; }
+  .task-case { font-size: 11px; color: var(--blue); font-weight: 500; }
+  .task-priority {
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 600;
+  }
+  .p-alta { background: #fce8e8; color: var(--red); }
+  .p-media { background: #fff3cd; color: #856404; }
+  .p-baja { background: #d4edda; color: var(--green); }
+
+  /* ═══ MODAL ═══ */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(15,17,23,0.7);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    display: none;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: #fff;
+    border-radius: 12px;
+    padding: 32px;
+    max-width: 680px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+  .modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: var(--steel);
+    margin-bottom: 4px;
+  }
+  .modal-subtitle { font-size: 13px; color: var(--mist); margin-bottom: 24px; }
+  .modal-close {
+    position: absolute;
+    top: 16px; right: 16px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: var(--mist);
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%;
+  }
+  .modal-close:hover { background: var(--border); color: var(--ink); }
+  .modal-footer {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ═══ DOCUMENT PREVIEW ═══ */
+  .doc-preview {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 32px;
+    font-family: 'Times New Roman', serif;
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: #1a1a1a;
+    min-height: 400px;
+    white-space: pre-wrap;
+    max-height: 500px;
+    overflow-y: auto;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.04);
+  }
+  .doc-preview h3 {
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    margin: 8px 0;
+    font-family: 'Times New Roman', serif;
+  }
+  .doc-preview p { margin: 6px 0; }
+
+  /* ═══ SEARCH ═══ */
+  .search-bar {
+    position: relative;
+    margin-bottom: 20px;
+  }
+  .search-bar input {
+    padding-left: 36px;
+    background: #fff;
+  }
+  .search-bar .search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--mist);
+    font-size: 14px;
+  }
+
+  /* ═══ CASE CARD ═══ */
+  .case-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .case-card:hover {
+    border-color: var(--gold);
+    box-shadow: 0 4px 16px rgba(200,151,58,0.1);
+  }
+  .case-card.selected { border-color: var(--gold); background: var(--gold-pale); }
+  .case-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    background: var(--steel);
+    color: #fff;
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .case-info { flex: 1; }
+  .case-client {
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--steel);
+  }
+  .case-type {
+    font-size: 12px;
+    color: var(--mist);
+    margin-top: 2px;
+  }
+  .case-meta {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--mist);
+  }
+
+  /* ═══ GDRIVE CONFIG ═══ */
+  .config-section {
+    background: var(--gold-pale);
+    border: 1px solid var(--gold);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .config-title {
+    font-weight: 600;
+    color: var(--steel);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+  }
+
+  /* ═══ TOOLTIP ═══ */
+  .tooltip {
+    background: var(--steel);
+    color: #fff;
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    position: absolute;
+    white-space: nowrap;
+    z-index: 300;
+    pointer-events: none;
+  }
+
+  /* ═══ HEADER ROW ═══ */
+  .hrow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  /* ═══ TABS ═══ */
+  .tab-bar {
+    display: flex;
+    gap: 0;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 24px;
+  }
+  .tab {
+    padding: 10px 20px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--mist);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.15s;
+  }
+  .tab:hover { color: var(--steel); }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); font-weight: 600; }
+
+  /* ═══ SPINNER ═══ */
+  .spinner {
+    display: inline-block;
+    width: 14px; height: 14px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ═══ TOAST ═══ */
+  .toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 500;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .toast {
+    background: var(--steel);
+    color: #fff;
+    padding: 12px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    animation: slideUp 0.3s ease;
+    border-left: 3px solid var(--gold);
+  }
+  .toast.error { border-left-color: var(--red); }
+  .toast.success { border-left-color: var(--green); }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ═══ RESPONSIVE ═══ */
+  @media (max-width: 768px) {
+    .sidebar { width: 200px; }
+    .stats-bar { grid-template-columns: repeat(2,1fr); }
+    .form-grid { grid-template-columns: 1fr; }
+    .form-group.span-2 { grid-column: span 1; }
+    .page { padding: 20px 16px; }
+  }
+
+  /* ═══ DRIVE SETUP NOTICE ═══ */
+  .notice {
+    background: var(--gold-pale);
+    border: 1px solid var(--gold);
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-size: 13px;
+    color: var(--steel);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .notice code {
+    background: rgba(0,0,0,0.07);
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ TOPBAR ═══ -->
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="icon">⚖️</div>
+    <h1>Robot Jurídico <span>Fernández Abogados Asociados</span></h1>
+  </div>
+  <div class="topbar-actions">
+    <div class="gdrive-status">
+      <div class="gdrive-dot" id="gDriveDot"></div>
+      <span id="gDriveLabel">Google Drive: no conectado</span>
+    </div>
+    <!-- Signed-out state -->
+    <button class="btn-gdrive" id="btnSignIn" onclick="oauthSignIn()">
+      🔗 Iniciar sesión Google
+    </button>
+    <!-- Signed-in state (hidden until auth) -->
+    <div id="userChip" style="display:none;align-items:center;gap:8px">
+      <img id="userAvatar" src="" alt="" style="width:28px;height:28px;border-radius:50%;border:2px solid var(--gold)">
+      <span id="userName" style="font-size:12px;color:var(--gold-light);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+      <button class="btn-gdrive" style="padding:4px 10px;font-size:11px" onclick="oauthSignOut()">Salir</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ BODY ═══ -->
+<div class="app-body">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Principal</div>
+      <div class="nav-item active" onclick="showPage('dashboard', this)">
+        <span class="nav-icon">📊</span> Dashboard
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Módulos</div>
+      <div class="nav-item" onclick="showPage('casos', this)">
+        <span class="nav-icon">📁</span> Casos
+        <span class="nav-badge" id="badgeCasos">0</span>
+      </div>
+      <div class="nav-item" onclick="showPage('documentos', this)">
+        <span class="nav-icon">📄</span> Documentos
+      </div>
+      <div class="nav-item" onclick="showPage('calendario', this)">
+        <span class="nav-icon">📅</span> Calendario
+      </div>
+      <div class="nav-item" onclick="showPage('tareas', this)">
+        <span class="nav-icon">✅</span> Tareas
+        <span class="nav-badge" id="badgeTareas">0</span>
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Datos</div>
+      <div class="nav-item" onclick="showPage('abogados', this)">
+        <span class="nav-icon">👤</span> Abogados
+      </div>
+      <div class="nav-item" onclick="showPage('juzgados', this)">
+        <span class="nav-icon">🏛️</span> Juzgados
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Config</div>
+      <div class="nav-item" onclick="showPage('configuracion', this)">
+        <span class="nav-icon">⚙️</span> Configuración
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- ═══ DASHBOARD ═══ -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Dashboard</div>
+          <div class="page-subtitle" id="dashDate">Cargando…</div>
+        </div>
+        <button class="btn btn-gold" onclick="showPage('documentos', document.querySelector('[onclick*=documentos]'))">
+          ✨ Generar Documento
+        </button>
+      </div>
+
+      <div class="stats-bar">
+        <div class="stat-card gold">
+          <div class="stat-num" id="statCasos">0</div>
+          <div class="stat-label">Casos Activos</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-num" id="statDocs">0</div>
+          <div class="stat-label">Documentos Generados</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-num" id="statTareas">0</div>
+          <div class="stat-label">Tareas Pendientes</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-num" id="statEventos">0</div>
+          <div class="stat-label">Eventos Esta Semana</div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+        <div class="card">
+          <div class="card-title">📁 Casos Recientes</div>
+          <div id="dashCasos"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">✅ Tareas Urgentes</div>
+          <div id="dashTareas"></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:0">
+        <div class="card-title">📅 Próximas Fechas</div>
+        <div id="dashEventos"></div>
+      </div>
+    </div>
+
+    <!-- ═══ CASOS ═══ -->
+    <div class="page" id="page-casos">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Gestión de Casos</div>
+          <div class="page-subtitle">Base de datos de clientes y expedientes</div>
+        </div>
+        <div style="display:flex;gap:10px">
+          <button class="btn btn-outline btn-sm" onclick="syncDrive()">☁️ Importar de Drive</button>
+          <button class="btn btn-outline btn-sm" onclick="pushCasosToSheets()">📤 Guardar en Drive</button>
+          <button class="btn btn-gold" onclick="openCasoModal()">+ Nuevo Caso</button>
+        </div>
+      </div>
+      <div class="search-bar">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="Buscar por cliente, caso, demandado…" oninput="filterCasos(this.value)" id="searchCasos">
+      </div>
+      <div id="casosList"></div>
+    </div>
+
+    <!-- ═══ DOCUMENTOS ═══ -->
+    <div class="page" id="page-documentos">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Generar Documentos</div>
+          <div class="page-subtitle">Seleccione un caso y el documento a proyectar</div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:300px 1fr;gap:24px">
+        <div>
+          <div class="card" style="padding:16px">
+            <div class="card-title" style="font-size:14px">1. Seleccionar Caso</div>
+            <input type="text" placeholder="Buscar caso…" oninput="filterDocCasos(this.value)" style="margin-bottom:12px">
+            <div id="docCasosList" style="max-height:300px;overflow-y:auto;"></div>
+          </div>
+          <div class="card" style="padding:16px;margin-top:0">
+            <div class="card-title" style="font-size:14px">Caso Seleccionado</div>
+            <div id="docCasoInfo" style="font-size:13px;color:var(--mist)">Ningún caso seleccionado</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="card">
+            <div class="card-title">2. Tipo de Documento</div>
+            <div class="docs-grid" id="docsGrid"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ CALENDARIO ═══ -->
+    <div class="page" id="page-calendario">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Calendario Jurídico</div>
+          <div class="page-subtitle">Audiencias, vencimientos y fechas procesales</div>
+        </div>
+        <button class="btn btn-gold" onclick="openEventoModal()">+ Nuevo Evento</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 340px;gap:24px">
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+            <button class="btn btn-outline btn-sm" onclick="changeMonth(-1)">← Anterior</button>
+            <span style="font-family:'Playfair Display',serif;font-size:17px;font-weight:600" id="calMonthLabel"></span>
+            <button class="btn btn-outline btn-sm" onclick="changeMonth(1)">Siguiente →</button>
+          </div>
+          <div class="calendar-grid" id="calDayHeaders"></div>
+          <div class="calendar-grid" id="calGrid" style="margin-top:6px"></div>
+        </div>
+        <div class="card" style="padding:16px">
+          <div class="card-title" style="font-size:14px">Próximos Eventos</div>
+          <div id="eventosList"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ TAREAS ═══ -->
+    <div class="page" id="page-tareas">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Tareas</div>
+          <div class="page-subtitle">Pendientes por abogado y caso</div>
+        </div>
+        <button class="btn btn-gold" onclick="openTareaModal()">+ Nueva Tarea</button>
+      </div>
+      <div class="tab-bar">
+        <div class="tab active" onclick="filterTareasTab('pendientes', this)">Pendientes</div>
+        <div class="tab" onclick="filterTareasTab('todas', this)">Todas</div>
+        <div class="tab" onclick="filterTareasTab('completadas', this)">Completadas</div>
+      </div>
+      <div id="tareasList"></div>
+    </div>
+
+    <!-- ═══ ABOGADOS ═══ -->
+    <div class="page" id="page-abogados">
+      <div class="page-header">
+        <div><div class="page-title">Abogados</div><div class="page-subtitle">Directorio del despacho</div></div>
+        <button class="btn btn-gold" onclick="openAbogadoModal()">+ Nuevo Abogado</button>
+      </div>
+      <div id="abogadosTable"></div>
+    </div>
+
+    <!-- ═══ JUZGADOS ═══ -->
+    <div class="page" id="page-juzgados">
+      <div class="page-header">
+        <div><div class="page-title">Juzgados</div><div class="page-subtitle">Registro de despachos judiciales</div></div>
+        <button class="btn btn-gold" onclick="openJuzgadoModal()">+ Nuevo Juzgado</button>
+      </div>
+      <div id="juzgadosTable"></div>
+    </div>
+
+    <!-- ═══ CONFIGURACIÓN ═══ -->
+    <div class="page" id="page-configuracion">
+      <div class="page-header">
+        <div><div class="page-title">Configuración</div><div class="page-subtitle">Google Drive y preferencias del despacho</div></div>
+      </div>
+
+      <div class="notice">
+        ℹ️ El Robot Jurídico usa <strong>Google OAuth 2.0</strong> para acceder a Google Sheets con su cuenta Google. Sólo necesita ingresar el <code>Client ID</code> de su proyecto en Google Cloud Console y el <code>Spreadsheet ID</code> de su hoja maestra.
+      </div>
+
+      <div class="card">
+        <div class="card-title">🔐 OAuth 2.0 — Google Identity Services</div>
+
+        <div style="background:var(--gold-pale);border:1px solid var(--gold);border-radius:8px;padding:14px 18px;margin-bottom:20px;font-size:13px;line-height:1.7">
+          <strong>Cómo obtener su Client ID:</strong><br>
+          1. Vaya a <a href="https://console.cloud.google.com" target="_blank" style="color:var(--blue)">console.cloud.google.com</a><br>
+          2. Cree un proyecto → <em>APIs &amp; Services</em> → <em>Credentials</em><br>
+          3. <em>Create Credentials</em> → <em>OAuth client ID</em> → <em>Web application</em><br>
+          4. En <em>Authorized JavaScript origins</em> agregue el origen donde aloja este archivo (ej. <code>https://su-dominio.com</code> o <code>http://localhost</code>)<br>
+          5. Habilite la <em>Google Sheets API</em> en <em>APIs &amp; Services → Library</em>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group span-2">
+            <label>Google OAuth Client ID</label>
+            <input type="text" id="cfgClientId" placeholder="123456789-abc.apps.googleusercontent.com">
+          </div>
+          <div class="form-group">
+            <label>Spreadsheet ID (hoja maestra)</label>
+            <input type="text" id="cfgSpreadsheetId" placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms">
+          </div>
+          <div class="form-group">
+            <label>API Key (solo lectura pública, opcional)</label>
+            <input type="password" id="cfgApiKey" placeholder="AIza… (para hojas públicas)">
+          </div>
+          <div class="form-group">
+            <label>Hoja: Casos (nombre)</label>
+            <input type="text" id="cfgSheetCasos" value="Casos">
+          </div>
+          <div class="form-group">
+            <label>Hoja: Abogados (nombre)</label>
+            <input type="text" id="cfgSheetAbogados" value="Abogados">
+          </div>
+          <div class="form-group">
+            <label>Hoja: Juzgados (nombre)</label>
+            <input type="text" id="cfgSheetJuzgados" value="Juzgados">
+          </div>
+        </div>
+        <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-primary" onclick="saveConfig()">💾 Guardar Configuración</button>
+          <button class="btn btn-gold" onclick="oauthSignIn()">🔐 Iniciar sesión con Google</button>
+          <button class="btn btn-outline" id="btnTestConn" onclick="testConnection()" style="display:none">🔌 Probar conexión</button>
+        </div>
+
+        <!-- OAuth status panel -->
+        <div id="oauthStatusPanel" style="display:none;margin-top:16px;padding:14px 18px;border-radius:8px;background:#f0f9f4;border:1px solid #1a6b47">
+          <div style="display:flex;align-items:center;gap:12px">
+            <img id="cfgAvatar" src="" alt="" style="width:40px;height:40px;border-radius:50%">
+            <div>
+              <div style="font-weight:600;color:var(--steel)" id="cfgUserName"></div>
+              <div style="font-size:12px;color:var(--mist)" id="cfgUserEmail"></div>
+            </div>
+            <span style="margin-left:auto;background:#d4edda;color:var(--green);padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600">✓ Autenticado</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🏢 Datos del Despacho</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Nombre del Despacho</label>
+            <input type="text" id="cfgDespacho" value="FERNANDEZ ABOGADOS ASOCIADOS S.A.S.">
+          </div>
+          <div class="form-group">
+            <label>Ciudad</label>
+            <input type="text" id="cfgCiudad" value="BOGOTÁ D.C.">
+          </div>
+          <div class="form-group">
+            <label>Abogado Principal (nombre)</label>
+            <input type="text" id="cfgAbogadoPrincipal" value="ANDRÉS FELIPE FERNÁNDEZ ROCHA">
+          </div>
+          <div class="form-group">
+            <label>Cédula Abogado Principal</label>
+            <input type="text" id="cfgCedulaAbogado" value="1.019.034.992">
+          </div>
+          <div class="form-group">
+            <label>Tarjeta Profesional</label>
+            <input type="text" id="cfgTarjeta" value="314.666">
+          </div>
+        </div>
+        <div style="margin-top:16px">
+          <button class="btn btn-primary" onclick="saveDespacho()">💾 Guardar</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ═══ MODALES ═══ -->
+
+<!-- Modal Google Drive / OAuth2 -->
+<div class="modal-overlay" id="modalGDrive">
+  <div class="modal" style="max-width:540px">
+    <button class="modal-close" onclick="closeModal('modalGDrive')">✕</button>
+    <div class="modal-title">🔐 Conectar con Google</div>
+    <div class="modal-subtitle">Autenticación OAuth 2.0 — acceso seguro a Google Sheets</div>
+
+    <!-- Step 1: need Client ID -->
+    <div id="oauthStep1">
+      <div class="notice" style="margin-bottom:16px">
+        ℹ️ Ingrese primero su <strong>OAuth Client ID</strong> en <em>Configuración</em>. Luego haga clic en el botón de abajo para autenticarse con su cuenta Google.
+      </div>
+      <div class="form-grid cols-1">
+        <div class="form-group">
+          <label>OAuth Client ID</label>
+          <input type="text" id="mdClientId" placeholder="123456789-abc.apps.googleusercontent.com">
+        </div>
+        <div class="form-group">
+          <label>Spreadsheet ID</label>
+          <input type="text" id="mdSpreadsheetId" placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms">
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: signed in -->
+    <div id="oauthStep2" style="display:none">
+      <div style="text-align:center;padding:16px 0">
+        <img id="mdAvatar" src="" alt="" style="width:64px;height:64px;border-radius:50%;border:3px solid var(--gold);margin-bottom:12px">
+        <div style="font-size:16px;font-weight:600;color:var(--steel)" id="mdUserName"></div>
+        <div style="font-size:13px;color:var(--mist)" id="mdUserEmail"></div>
+        <div style="margin-top:16px">
+          <span style="background:#d4edda;color:var(--green);padding:5px 16px;border-radius:20px;font-size:13px;font-weight:600">✓ Sesión iniciada</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modalGDrive')">Cerrar</button>
+      <button class="btn btn-gold" id="mdOauthBtn" onclick="oauthSignIn()">🔐 Autenticar con Google</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Nuevo Caso -->
+<div class="modal-overlay" id="modalCaso">
+  <div class="modal" style="max-width:760px">
+    <button class="modal-close" onclick="closeModal('modalCaso')">✕</button>
+    <div class="modal-title" id="modalCasoTitle">Nuevo Caso</div>
+    <div class="modal-subtitle">Complete los datos del expediente</div>
+    <input type="hidden" id="casoEditId">
+
+    <div class="tab-bar">
+      <div class="tab active" onclick="switchCasoTab('cliente',this)">Cliente</div>
+      <div class="tab" onclick="switchCasoTab('proceso',this)">Proceso</div>
+      <div class="tab" onclick="switchCasoTab('laboral',this)">Datos Laborales</div>
+    </div>
+
+    <!-- Tab Cliente -->
+    <div id="casoTab-cliente">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Número de Expediente</label>
+          <input type="text" id="c_expediente" placeholder="EXP-2024-001">
+        </div>
+        <div class="form-group">
+          <label>Estado</label>
+          <select id="c_estado">
+            <option>Activo</option><option>Pendiente</option>
+            <option>Audiencia</option><option>Cerrado</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Nombre del Demandante</label>
+          <input type="text" id="c_demandante" placeholder="NOMBRE COMPLETO MAYÚSCULA">
+        </div>
+        <div class="form-group">
+          <label>Cédula Demandante</label>
+          <input type="text" id="c_cedula" placeholder="1.234.567.890">
+        </div>
+        <div class="form-group">
+          <label>Ciudad Domicilio</label>
+          <input type="text" id="c_ciudad" placeholder="BOGOTÁ D.C.">
+        </div>
+        <div class="form-group">
+          <label>Teléfono</label>
+          <input type="text" id="c_telefono">
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab Proceso -->
+    <div id="casoTab-proceso" style="display:none">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Tipo de Proceso</label>
+          <select id="c_tipoProceso">
+            <option>ORDINARIO LABORAL DE PRIMERA INSTANCIA</option>
+            <option>EJECUTIVO LABORAL</option>
+            <option>TUTELA</option>
+            <option>DERECHO DE PETICIÓN</option>
+            <option>RECURSO DE APELACIÓN</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Abogado Asignado</label>
+          <select id="c_abogado"></select>
+        </div>
+        <div class="form-group">
+          <label>Juzgado</label>
+          <select id="c_juzgado"></select>
+        </div>
+        <div class="form-group">
+          <label>Radicado</label>
+          <input type="text" id="c_radicado" placeholder="110013105001-2024-00001">
+        </div>
+        <div class="form-group">
+          <label>Demandado (Empresa)</label>
+          <input type="text" id="c_demandado" placeholder="EMPRESA S.A.S.">
+        </div>
+        <div class="form-group">
+          <label>NIT Demandado</label>
+          <input type="text" id="c_nitDemandado">
+        </div>
+        <div class="form-group">
+          <label>Fecha Radicación</label>
+          <input type="date" id="c_fechaRadicacion">
+        </div>
+        <div class="form-group">
+          <label>Próxima Audiencia</label>
+          <input type="date" id="c_proxAudiencia">
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab Laboral -->
+    <div id="casoTab-laboral" style="display:none">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Tipo de Contrato</label>
+          <select id="c_tipoContrato">
+            <option>CONTRATO DE TRABAJO A TÉRMINO INDEFINIDO</option>
+            <option>CONTRATO A TÉRMINO FIJO</option>
+            <option>CONTRATO DE OBRA O LABOR</option>
+            <option>CONTRATO VERBAL</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Cargo Desempeñado</label>
+          <input type="text" id="c_cargo" placeholder="Auxiliar de Servicios Generales">
+        </div>
+        <div class="form-group">
+          <label>Fecha Inicio Relación Laboral</label>
+          <input type="date" id="c_fechaInicio">
+        </div>
+        <div class="form-group">
+          <label>Fecha Terminación</label>
+          <input type="date" id="c_fechaFin">
+        </div>
+        <div class="form-group">
+          <label>Salario Mensual</label>
+          <input type="text" id="c_salario" placeholder="$ 1.300.000">
+        </div>
+        <div class="form-group">
+          <label>Causa de Terminación</label>
+          <select id="c_causaTerminacion">
+            <option>DESPIDO SIN JUSTA CAUSA</option>
+            <option>DESPIDO CON JUSTA CAUSA</option>
+            <option>RENUNCIA</option>
+            <option>MUTUO ACUERDO</option>
+            <option>CONTRATO REALIDAD</option>
+          </select>
+        </div>
+        <div class="form-group span-2">
+          <label>Observaciones / Notas del Caso</label>
+          <textarea id="c_notas" placeholder="Resumen del caso, documentos recibidos, etc."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modalCaso')">Cancelar</button>
+      <button class="btn btn-gold" onclick="saveCaso()">💾 Guardar Caso</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Evento -->
+<div class="modal-overlay" id="modalEvento">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modalEvento')">✕</button>
+    <div class="modal-title">📅 Nuevo Evento</div>
+    <div class="modal-subtitle">Audiencia, vencimiento o fecha procesal</div>
+    <div class="form-grid cols-1">
+      <div class="form-group">
+        <label>Título del Evento</label>
+        <input type="text" id="ev_titulo" placeholder="Audiencia de Conciliación">
+      </div>
+      <div class="form-group">
+        <label>Fecha</label>
+        <input type="date" id="ev_fecha">
+      </div>
+      <div class="form-group">
+        <label>Hora</label>
+        <input type="time" id="ev_hora">
+      </div>
+      <div class="form-group">
+        <label>Caso Relacionado</label>
+        <select id="ev_caso"></select>
+      </div>
+      <div class="form-group">
+        <label>Tipo</label>
+        <select id="ev_tipo">
+          <option value="audiencia">🏛️ Audiencia</option>
+          <option value="vencimiento">⏰ Vencimiento</option>
+          <option value="entrega">📦 Entrega de Doc.</option>
+          <option value="otro">📌 Otro</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Notas</label>
+        <textarea id="ev_notas" style="min-height:60px"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modalEvento')">Cancelar</button>
+      <button class="btn btn-gold" onclick="saveEvento()">💾 Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Tarea -->
+<div class="modal-overlay" id="modalTarea">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modalTarea')">✕</button>
+    <div class="modal-title">✅ Nueva Tarea</div>
+    <div class="form-grid cols-1">
+      <div class="form-group">
+        <label>Descripción de la Tarea</label>
+        <input type="text" id="t_texto" placeholder="Redactar memorial de alegatos…">
+      </div>
+      <div class="form-group">
+        <label>Caso Relacionado</label>
+        <select id="t_caso"></select>
+      </div>
+      <div class="form-group">
+        <label>Asignada a</label>
+        <select id="t_abogado"></select>
+      </div>
+      <div class="form-group">
+        <label>Fecha Límite</label>
+        <input type="date" id="t_fecha">
+      </div>
+      <div class="form-group">
+        <label>Prioridad</label>
+        <select id="t_prioridad">
+          <option value="alta">🔴 Alta</option>
+          <option value="media" selected>🟡 Media</option>
+          <option value="baja">🟢 Baja</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modalTarea')">Cancelar</button>
+      <button class="btn btn-gold" onclick="saveTarea()">💾 Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Abogado -->
+<div class="modal-overlay" id="modalAbogado">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modalAbogado')">✕</button>
+    <div class="modal-title">👤 Abogado</div>
+    <input type="hidden" id="ab_id">
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Nombre Completo</label>
+        <input type="text" id="ab_nombre" placeholder="ANDRÉS FELIPE FERNÁNDEZ ROCHA">
+      </div>
+      <div class="form-group">
+        <label>Cédula</label>
+        <input type="text" id="ab_cedula">
+      </div>
+      <div class="form-group">
+        <label>Tarjeta Profesional</label>
+        <input type="text" id="ab_tarjeta" placeholder="314.666">
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="ab_email">
+      </div>
+      <div class="form-group">
+        <label>Teléfono</label>
+        <input type="text" id="ab_tel">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modalAbogado')">Cancelar</button>
+      <button class="btn btn-gold" onclick="saveAbogado()">💾 Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Juzgado -->
+<div class="modal-overlay" id="modalJuzgado">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modalJuzgado')">✕</button>
+    <div class="modal-title">🏛️ Juzgado</div>
+    <input type="hidden" id="jz_id">
+    <div class="form-grid">
+      <div class="form-group span-2">
+        <label>Nombre del Juzgado</label>
+        <input type="text" id="jz_nombre" placeholder="JUZGADO LABORAL DEL CIRCUITO DE BOGOTÁ D.C.">
+      </div>
+      <div class="form-group">
+        <label>Ciudad</label>
+        <input type="text" id="jz_ciudad" value="BOGOTÁ D.C.">
+      </div>
+      <div class="form-group">
+        <label>Dirección</label>
+        <input type="text" id="jz_direccion">
+      </div>
+      <div class="form-group">
+        <label>Juez</label>
+        <input type="text" id="jz_juez">
+      </div>
+      <div class="form-group">
+        <label>Teléfono</label>
+        <input type="text" id="jz_tel">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modalJuzgado')">Cancelar</button>
+      <button class="btn btn-gold" onclick="saveJuzgado()">💾 Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Documento Generado -->
+<div class="modal-overlay" id="modalDoc">
+  <div class="modal" style="max-width:820px">
+    <button class="modal-close" onclick="closeModal('modalDoc')">✕</button>
+    <div class="modal-title" id="modalDocTitle">Documento Generado</div>
+    <div class="modal-subtitle" id="modalDocSubtitle"></div>
+    <div class="doc-preview" id="docPreviewContent"></div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modalDoc')">Cerrar</button>
+      <button class="btn btn-outline" onclick="copyDoc()">📋 Copiar Texto</button>
+      <button class="btn btn-gold" onclick="printDoc()">🖨️ Imprimir / PDF</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ═══════════════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════════════ -->
+<script>
+// ════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════
+let DB = {
+  casos: [],
+  abogados: [
+    { id: 'ab1', nombre: 'ANDRÉS FELIPE FERNÁNDEZ ROCHA', cedula: '1.019.034.992', tarjeta: '314.666', email: 'aff@fernandezabogados.co', tel: '' }
+  ],
+  juzgados: [
+    { id: 'jz1', nombre: 'JUZGADO LABORAL DEL CIRCUITO DE BOGOTÁ D.C. (REPARTO)', ciudad: 'BOGOTÁ D.C.', direccion: 'Palacio de Justicia', juez: '', tel: '' }
+  ],
+  eventos: [],
+  tareas: [],
+  config: {
+    spreadsheetId: '',
+    apiKey: '',
+    sheetCasos: 'Casos',
+    sheetAbogados: 'Abogados',
+    sheetJuzgados: 'Juzgados',
+    despacho: 'FERNANDEZ ABOGADOS ASOCIADOS S.A.S.',
+    ciudad: 'BOGOTÁ D.C.',
+    abogadoPrincipal: 'ANDRÉS FELIPE FERNÁNDEZ ROCHA',
+    cedulaAbogado: '1.019.034.992',
+    tarjeta: '314.666'
+  }
+};
+
+let selectedCasoForDoc = null;
+let currentCalMonth = new Date().getMonth();
+let currentCalYear = new Date().getFullYear();
+let docsGenerados = 0;
+
+// Persist to localStorage
+function saveDB() {
+  try { localStorage.setItem('robotJuridico_db', JSON.stringify(DB)); } catch(e) {}
+}
+function loadDB() {
+  try {
+    const s = localStorage.getItem('robotJuridico_db');
+    if (s) DB = JSON.parse(s);
+  } catch(e) {}
+}
+
+// ════════════════════════════════════════
+// NAV
+// ════════════════════════════════════════
+function showPage(name, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  if (el) el.classList.add('active');
+  // refresh
+  if (name === 'dashboard') renderDashboard();
+  if (name === 'casos') renderCasos();
+  if (name === 'documentos') renderDocumentos();
+  if (name === 'calendario') renderCalendario();
+  if (name === 'tareas') renderTareas('pendientes');
+  if (name === 'abogados') renderAbogados();
+  if (name === 'juzgados') renderJuzgados();
+  if (name === 'configuracion') loadConfigForm();
+}
+
+// ════════════════════════════════════════
+// TOAST
+// ════════════════════════════════════════
+function toast(msg, type='info') {
+  const tc = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = 'toast ' + (type === 'error' ? 'error' : type === 'success' ? 'success' : '');
+  t.innerHTML = (type === 'success' ? '✅ ' : type === 'error' ? '❌ ' : 'ℹ️ ') + msg;
+  tc.appendChild(t);
+  setTimeout(() => t.remove(), 3500);
+}
+
+// ════════════════════════════════════════
+// MODAL
+// ════════════════════════════════════════
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// ════════════════════════════════════════
+// OAUTH 2.0 — GOOGLE IDENTITY SERVICES
+// ════════════════════════════════════════
+// Uses Google Identity Services (GIS) token model for implicit grant.
+// Scopes: spreadsheets read+write
+const OAUTH_SCOPE = 'https://www.googleapis.com/auth/spreadsheets';
+
+let oauthToken = null;       // current access token
+let tokenClient = null;      // GIS TokenClient
+let currentUser = null;      // { name, email, picture }
+let oauthResolve = null;     // promise resolver for token flow
+
+// Called by GIS library once loaded (async)
+function initGIS() {
+  const clientId = DB.config.clientId || '';
+  if (!clientId) return; // will init when user provides clientId
+  try {
+    tokenClient = google.accounts.oauth2.initTokenClient({
+      client_id: clientId,
+      scope: OAUTH_SCOPE,
+      callback: handleTokenResponse,
+    });
+  } catch(e) {
+    console.warn('GIS init error:', e);
+  }
+}
+
+function handleTokenResponse(resp) {
+  if (resp.error) {
+    toast('Error de autenticación: ' + resp.error + (resp.error_description ? ' — ' + resp.error_description : ''), 'error');
+    setAuthState(false);
+    if (oauthResolve) { oauthResolve(false); oauthResolve = null; }
+    return;
+  }
+  oauthToken = resp.access_token;
+  // Persist token in sessionStorage so it survives between button clicks
+  try { sessionStorage.setItem('rj_token', oauthToken); } catch(e) {}
+  // Fetch user profile with the token
+  fetchUserProfile().then(() => {
+    setAuthState(true);
+    toast('✅ Sesión iniciada con Google', 'success');
+    if (oauthResolve) { oauthResolve(true); oauthResolve = null; }
+    setTimeout(() => {
+      toast('ℹ️ Haga clic en "Importar de Drive" para cargar sus datos', 'info');
+    }, 1500);
+  });
+}
+
+async function fetchUserProfile() {
+  try {
+    const r = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+      headers: { Authorization: 'Bearer ' + oauthToken }
+    });
+    if (!r.ok) return;
+    const d = await r.json();
+    currentUser = { name: d.name || '', email: d.email || '', picture: d.picture || '' };
+  } catch(e) {}
+}
+
+function setAuthState(signedIn) {
+  const dot = document.getElementById('gDriveDot');
+  const lbl = document.getElementById('gDriveLabel');
+  const btnSignIn = document.getElementById('btnSignIn');
+  const userChip = document.getElementById('userChip');
+
+  if (signedIn && currentUser) {
+    dot.className = 'gdrive-dot connected';
+    lbl.textContent = 'Drive: conectado';
+    btnSignIn.style.display = 'none';
+    userChip.style.display = 'flex';
+    document.getElementById('userAvatar').src = currentUser.picture || '';
+    document.getElementById('userName').textContent = currentUser.name || currentUser.email;
+
+    // Update config page panel
+    const panel = document.getElementById('oauthStatusPanel');
+    if (panel) {
+      panel.style.display = 'block';
+      document.getElementById('cfgAvatar').src = currentUser.picture || '';
+      document.getElementById('cfgUserName').textContent = currentUser.name || '';
+      document.getElementById('cfgUserEmail').textContent = currentUser.email || '';
+    }
+    document.getElementById('btnTestConn') && (document.getElementById('btnTestConn').style.display = '');
+
+    // Modal step
+    document.getElementById('oauthStep1') && (document.getElementById('oauthStep1').style.display = 'none');
+    document.getElementById('oauthStep2') && (document.getElementById('oauthStep2').style.display = 'block');
+    if (document.getElementById('mdAvatar')) document.getElementById('mdAvatar').src = currentUser.picture || '';
+    if (document.getElementById('mdUserName')) document.getElementById('mdUserName').textContent = currentUser.name || '';
+    if (document.getElementById('mdUserEmail')) document.getElementById('mdUserEmail').textContent = currentUser.email || '';
+    if (document.getElementById('mdOauthBtn')) document.getElementById('mdOauthBtn').textContent = '🔄 Reconectar';
+  } else {
+    oauthToken = null; currentUser = null;
+    dot.className = 'gdrive-dot error';
+    lbl.textContent = 'Google Drive: no conectado';
+    btnSignIn.style.display = '';
+    userChip.style.display = 'none';
+    const panel = document.getElementById('oauthStatusPanel');
+    if (panel) panel.style.display = 'none';
+    document.getElementById('oauthStep1') && (document.getElementById('oauthStep1').style.display = 'block');
+    document.getElementById('oauthStep2') && (document.getElementById('oauthStep2').style.display = 'none');
+    if (document.getElementById('mdOauthBtn')) document.getElementById('mdOauthBtn').textContent = '🔐 Autenticar con Google';
+  }
+}
+
+function ensureTokenClient() {
+  const clientId = DB.config.clientId ||
+    document.getElementById('mdClientId')?.value.trim() ||
+    document.getElementById('cfgClientId')?.value.trim();
+  if (!clientId) {
+    toast('Ingrese primero su OAuth Client ID en Configuración', 'error');
+    showPage('configuracion', document.querySelector('[onclick*=configuracion]'));
+    return false;
+  }
+  if (!DB.config.clientId) { DB.config.clientId = clientId; saveDB(); }
+  if (!tokenClient || tokenClient._clientId !== clientId) {
+    try {
+      tokenClient = google.accounts.oauth2.initTokenClient({
+        client_id: clientId,
+        scope: OAUTH_SCOPE,
+        callback: handleTokenResponse,
+      });
+      tokenClient._clientId = clientId;
+    } catch(e) {
+      toast('Error inicializando Google Identity Services: ' + e.message, 'error');
+      return false;
+    }
+  }
+  return true;
+}
+
+function oauthSignIn() {
+  if (!window.google?.accounts?.oauth2) {
+    toast('La librería de Google Identity Services aún no cargó. Espere un momento.', 'error');
+    return;
+  }
+  if (!ensureTokenClient()) return;
+  // Never force 'consent' prompt — causes callback issues in some browsers
+  tokenClient.requestAccessToken({ prompt: '' });
+}
+
+function oauthSignOut() {
+  if (oauthToken) {
+    try { google.accounts.oauth2.revoke(oauthToken, () => {}); } catch(e) {}
+  }
+  try { sessionStorage.removeItem('rj_token'); } catch(e) {}
+  setAuthState(false);
+  dot_reset();
+  toast('Sesión cerrada');
+}
+function dot_reset() {
+  document.getElementById('gDriveDot').className = 'gdrive-dot';
+  document.getElementById('gDriveLabel').textContent = 'Google Drive: no conectado';
+}
+
+// Returns a valid token, requesting one if needed
+function getToken() {
+  return new Promise((resolve) => {
+    // Recover from sessionStorage if memory var lost
+    if (!oauthToken) {
+      try { oauthToken = sessionStorage.getItem('rj_token') || null; } catch(e) {}
+    }
+    if (oauthToken) { resolve(oauthToken); return; }
+    if (!ensureTokenClient()) { resolve(null); return; }
+    oauthResolve = (ok) => resolve(ok ? oauthToken : null);
+    tokenClient.requestAccessToken({ prompt: '' });
+  });
+}
+
+function openGDriveModal() {
+  if (DB.config.clientId) document.getElementById('mdClientId').value = DB.config.clientId;
+  if (DB.config.spreadsheetId) document.getElementById('mdSpreadsheetId').value = DB.config.spreadsheetId;
+  // persist spreadsheet ID from modal
+  document.getElementById('mdSpreadsheetId').addEventListener('change', function() {
+    DB.config.spreadsheetId = this.value.trim(); saveDB();
+  }, { once: true });
+  openModal('modalGDrive');
+}
+
+// ════════════════════════════════════════
+// SHEETS API (OAuth authenticated)
+// ════════════════════════════════════════
+async function sheetsGet(range) {
+  const token = await getToken();
+  if (!token) throw new Error('Sin autenticación');
+  const sid = DB.config.spreadsheetId;
+  if (!sid) throw new Error('Configure el Spreadsheet ID');
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/${encodeURIComponent(range)}`;
+  const r = await fetch(url, { headers: { Authorization: 'Bearer ' + token } });
+  if (r.status === 401) { setAuthState(false); throw new Error('Sesión expirada. Vuelva a autenticarse.'); }
+  if (!r.ok) { const t = await r.text(); throw new Error('Sheets API: ' + r.status + ' ' + t.slice(0,120)); }
+  return r.json();
+}
+
+async function sheetsWrite(range, values) {
+  const token = await getToken();
+  if (!token) throw new Error('Sin autenticación');
+  const sid = DB.config.spreadsheetId;
+  if (!sid) throw new Error('Configure el Spreadsheet ID');
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/${encodeURIComponent(range)}?valueInputOption=USER_ENTERED`;
+  const r = await fetch(url, {
+    method: 'PUT',
+    headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ range, majorDimension: 'ROWS', values })
+  });
+  if (r.status === 401) { setAuthState(false); throw new Error('Sesión expirada.'); }
+  if (!r.ok) { const t = await r.text(); throw new Error('Sheets write: ' + r.status + ' ' + t.slice(0,120)); }
+  return r.json();
+}
+
+async function sheetsAppend(sheet, values) {
+  const token = await getToken();
+  if (!token) throw new Error('Sin autenticación');
+  const sid = DB.config.spreadsheetId;
+  if (!sid) throw new Error('Configure el Spreadsheet ID');
+  const range = `${sheet}!A1`;
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/${encodeURIComponent(range)}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`;
+  const r = await fetch(url, {
+    method: 'POST',
+    headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ range, majorDimension: 'ROWS', values })
+  });
+  if (r.status === 401) { setAuthState(false); throw new Error('Sesión expirada.'); }
+  if (!r.ok) { const t = await r.text(); throw new Error('Sheets append: ' + r.status + ' ' + t.slice(0,120)); }
+  return r.json();
+}
+
+async function syncDrive() {
+  // Recover token from sessionStorage if memory var lost
+  if (!oauthToken) {
+    try { oauthToken = sessionStorage.getItem('rj_token') || null; } catch(e) {}
+  }
+  if (!oauthToken) {
+    toast('Inicie sesión con Google primero', 'error');
+    return;
+  }
+  if (!DB.config.spreadsheetId) {
+    toast('Configure el Spreadsheet ID en ⚙️ Configuración', 'error');
+    return;
+  }
+  const dot = document.getElementById('gDriveDot');
+  const lbl = document.getElementById('gDriveLabel');
+  dot.className = 'gdrive-dot';
+  lbl.textContent = 'Sincronizando…';
+  let imported = 0, errors = [];
+  // Sync Casos
+  try {
+    const data = await sheetsGet(`${DB.config.sheetCasos || 'Casos'}!A:Z`);
+    importCasosFromSheets(data.values || []);
+    imported++;
+  } catch(e) { errors.push('Casos: ' + e.message); console.error('Casos sync error:', e); }
+  // Sync Abogados
+  try {
+    const data = await sheetsGet(`${DB.config.sheetAbogados || 'Abogados'}!A:Z`);
+    importAbogadosFromSheets(data.values || []);
+    imported++;
+  } catch(e) { errors.push('Abogados: ' + e.message); console.error('Abogados sync error:', e); }
+  // Sync Juzgados
+  try {
+    const data = await sheetsGet(`${DB.config.sheetJuzgados || 'Juzgados'}!A:Z`);
+    importJuzgadosFromSheets(data.values || []);
+    imported++;
+  } catch(e) { errors.push('Juzgados: ' + e.message); console.error('Juzgados sync error:', e); }
+
+  saveDB();
+  if (errors.length === 0) {
+    dot.className = 'gdrive-dot connected';
+    lbl.textContent = 'Drive: sincronizado ✓';
+    toast(`Sincronización completa (${imported} hojas)`, 'success');
+  } else if (imported > 0) {
+    dot.className = 'gdrive-dot connected';
+    lbl.textContent = 'Drive: parcial';
+    toast('Sincronizado parcialmente. Error: ' + errors[0], 'info');
+  } else {
+    dot.className = 'gdrive-dot error';
+    lbl.textContent = 'Drive: error';
+    toast('Error: ' + errors[0], 'error');
+    console.error('Todos los syncs fallaron:', errors);
+  }
+  renderDashboard();
+  renderCasos();
+}
+
+// Push local casos back to Sheets (full overwrite of data rows)
+async function pushCasosToSheets() {
+  if (!oauthToken) {
+    try { oauthToken = sessionStorage.getItem('rj_token') || null; } catch(e) {}
+  }
+  if (!oauthToken) { toast('Inicie sesión con Google primero', 'error'); return; }
+  if (!DB.config.spreadsheetId) { toast('Configure el Spreadsheet ID', 'error'); return; }
+  const sheetName = DB.config.sheetCasos || 'Casos';
+  const headers = ['id','expediente','demandante','cedula','ciudad','telefono','demandado','nitDemandado',
+    'tipoProceso','tipoContrato','cargo','salario','fechaInicio','fechaFin','causaTerminacion',
+    'estado','abogado','juzgado','radicado','fechaRadicacion','notas'];
+  const rows = [headers, ...DB.casos.map(c => headers.map(h => c[h] || ''))];
+  try {
+    await sheetsWrite(`${sheetName}!A1`, rows);
+    toast(`${DB.casos.length} casos guardados en Google Sheets`, 'success');
+  } catch(e) {
+    toast('Error guardando: ' + e.message, 'error');
+  }
+}
+
+function importCasosFromSheets(rows) {
+  if (rows.length < 2) return;
+  const headers = rows[0].map(h => h.toLowerCase().trim());
+  const newCasos = [];
+  for (let i = 1; i < rows.length; i++) {
+    const row = rows[i];
+    const c = {};
+    headers.forEach((h, idx) => { c[h] = row[idx] || ''; });
+    const caso = {
+      id: c['id'] || c['expediente'] || 'imp-' + i,
+      expediente: c['expediente'] || c['id'] || '',
+      demandante: c['demandante'] || c['cliente'] || '',
+      cedula: c['cedula'] || '',
+      demandado: c['demandado'] || c['empresa'] || '',
+      nitDemandado: c['nit'] || c['nitdemandado'] || '',
+      tipoProceso: c['tipoproceso'] || c['tipo'] || 'ORDINARIO LABORAL',
+      tipoContrato: c['tipocontrato'] || '',
+      cargo: c['cargo'] || '',
+      salario: c['salario'] || '',
+      fechaInicio: c['fechainicio'] || c['inicio'] || '',
+      fechaFin: c['fechafin'] || c['fin'] || '',
+      causaTerminacion: c['causaterminacion'] || c['causa'] || '',
+      estado: c['estado'] || 'Activo',
+      abogado: c['abogado'] || DB.config.abogadoPrincipal || '',
+      juzgado: c['juzgado'] || '',
+      radicado: c['radicado'] || '',
+      ciudad: c['ciudad'] || DB.config.ciudad || 'BOGOTÁ D.C.',
+      notas: c['notas'] || '',
+      fechaRadicacion: c['fecharadicacion'] || '',
+    };
+    if (caso.demandante) newCasos.push(caso);
+  }
+  newCasos.forEach(nc => {
+    const exists = DB.casos.find(c => c.id === nc.id || (c.expediente && c.expediente === nc.expediente));
+    if (!exists) DB.casos.push(nc);
+    else Object.assign(exists, nc);
+  });
+}
+
+function importAbogadosFromSheets(rows) {
+  if (rows.length < 2) return;
+  const headers = rows[0].map(h => h.toLowerCase().trim());
+  for (let i = 1; i < rows.length; i++) {
+    const row = rows[i];
+    const c = {};
+    headers.forEach((h, idx) => { c[h] = row[idx] || ''; });
+    const ab = {
+      id: c['id'] || 'ab-sh-' + i,
+      nombre: (c['nombre'] || '').toUpperCase(),
+      cedula: c['cedula'] || '',
+      tarjeta: c['tarjeta'] || '',
+      email: c['email'] || '',
+      tel: c['tel'] || c['telefono'] || '',
+    };
+    if (!ab.nombre) continue;
+    const exists = DB.abogados.find(a => a.nombre === ab.nombre || a.id === ab.id);
+    if (!exists) DB.abogados.push(ab);
+    else Object.assign(exists, ab);
+  }
+}
+
+function importJuzgadosFromSheets(rows) {
+  if (rows.length < 2) return;
+  const headers = rows[0].map(h => h.toLowerCase().trim());
+  for (let i = 1; i < rows.length; i++) {
+    const row = rows[i];
+    const c = {};
+    headers.forEach((h, idx) => { c[h] = row[idx] || ''; });
+    const jz = {
+      id: c['id'] || 'jz-sh-' + i,
+      nombre: (c['nombre'] || '').toUpperCase(),
+      ciudad: (c['ciudad'] || 'BOGOTÁ D.C.').toUpperCase(),
+      direccion: c['direccion'] || '',
+      juez: (c['juez'] || '').toUpperCase(),
+      tel: c['tel'] || c['telefono'] || '',
+    };
+    if (!jz.nombre) continue;
+    const exists = DB.juzgados.find(j => j.nombre === jz.nombre || j.id === jz.id);
+    if (!exists) DB.juzgados.push(jz);
+    else Object.assign(exists, jz);
+  }
+}
+
+async function pushToSheets(sheetName, rows) {
+  await sheetsAppend(sheetName, rows);
+}
+
+// ════════════════════════════════════════
+// DASHBOARD
+// ════════════════════════════════════════
+function renderDashboard() {
+  const now = new Date();
+  document.getElementById('dashDate').textContent = now.toLocaleDateString('es-CO', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+  const activos = DB.casos.filter(c => c.estado === 'Activo').length;
+  const pendTareas = DB.tareas.filter(t => !t.done).length;
+  // events this week
+  const weekEnd = new Date(now); weekEnd.setDate(weekEnd.getDate() + 7);
+  const thisWeek = DB.eventos.filter(e => {
+    const d = new Date(e.fecha); return d >= now && d <= weekEnd;
+  }).length;
+
+  document.getElementById('statCasos').textContent = activos;
+  document.getElementById('statDocs').textContent = docsGenerados;
+  document.getElementById('statTareas').textContent = pendTareas;
+  document.getElementById('statEventos').textContent = thisWeek;
+  document.getElementById('badgeCasos').textContent = DB.casos.length;
+  document.getElementById('badgeTareas').textContent = pendTareas;
+
+  // Recent cases
+  const dc = document.getElementById('dashCasos');
+  const recent = DB.casos.slice(-5).reverse();
+  if (!recent.length) { dc.innerHTML = '<p style="color:var(--mist);font-size:13px">Sin casos registrados</p>'; }
+  else dc.innerHTML = recent.map(c => `
+    <div class="event-item" style="cursor:pointer" onclick="showPage('casos',document.querySelector('[onclick*=casos]'))">
+      <div>
+        <div style="font-weight:600;font-size:14px">${c.demandante}</div>
+        <div style="font-size:12px;color:var(--mist)">${c.expediente || ''} · ${c.demandado || ''}</div>
+      </div>
+      <span class="tag ${c.estado==='Activo'?'tag-active':c.estado==='Cerrado'?'tag-closed':'tag-pending'}" style="margin-left:auto">${c.estado}</span>
+    </div>`).join('');
+
+  // Urgent tasks
+  const dt = document.getElementById('dashTareas');
+  const urg = DB.tareas.filter(t => !t.done && t.prioridad==='alta').slice(0,5);
+  if (!urg.length) { dt.innerHTML = '<p style="color:var(--mist);font-size:13px">Sin tareas urgentes</p>'; }
+  else dt.innerHTML = urg.map(t => `
+    <div class="task-item">
+      <div class="task-checkbox ${t.done?'done':''}" onclick="toggleTarea('${t.id}')">${t.done?'✓':''}</div>
+      <div>
+        <div class="task-text">${t.texto}</div>
+        <div class="task-meta">${t.abogado || ''} · ${t.fecha || ''}</div>
+      </div>
+      <span class="task-priority p-alta">Alta</span>
+    </div>`).join('');
+
+  // Events
+  const de = document.getElementById('dashEventos');
+  const upcoming = DB.eventos.filter(e => new Date(e.fecha) >= now).sort((a,b)=>new Date(a.fecha)-new Date(b.fecha)).slice(0,5);
+  if (!upcoming.length) { de.innerHTML = '<p style="color:var(--mist);font-size:13px">Sin eventos próximos</p>'; }
+  else de.innerHTML = upcoming.map(e => {
+    const d = new Date(e.fecha + 'T00:00:00');
+    return `<div class="event-item">
+      <div class="event-date-box">
+        <span style="font-size:9px">${d.toLocaleDateString('es',{month:'short'})}</span>
+        <span class="day">${d.getDate()}</span>
+      </div>
+      <div class="event-color" style="background:${e.tipo==='audiencia'?'#1a3a6b':e.tipo==='vencimiento'?'#c0392b':'var(--gold)'}"></div>
+      <div>
+        <div style="font-weight:600;font-size:14px">${e.titulo}</div>
+        <div style="font-size:12px;color:var(--mist)">${e.hora||''} · ${e.caso||'Sin caso'}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ════════════════════════════════════════
+// CASOS
+// ════════════════════════════════════════
+function openCasoModal(id) {
+  document.getElementById('modalCasoTitle').textContent = id ? 'Editar Caso' : 'Nuevo Caso';
+  document.getElementById('casoEditId').value = id || '';
+  // populate abogado/juzgado selects
+  const abSel = document.getElementById('c_abogado');
+  abSel.innerHTML = DB.abogados.map(a => `<option value="${a.nombre}">${a.nombre}</option>`).join('');
+  const jzSel = document.getElementById('c_juzgado');
+  jzSel.innerHTML = '<option value="">— Sin asignar —</option>' + DB.juzgados.map(j => `<option value="${j.nombre}">${j.nombre}</option>`).join('');
+
+  if (id) {
+    const c = DB.casos.find(x => x.id === id);
+    if (c) {
+      ['expediente','demandante','cedula','ciudad','telefono','demandado','nitDemandado',
+       'radicado','fechaRadicacion','proxAudiencia','cargo','salario','fechaInicio','fechaFin','notas'].forEach(f => {
+        const el = document.getElementById('c_'+f); if (el) el.value = c[f] || '';
+      });
+      setSelectVal('c_estado', c.estado);
+      setSelectVal('c_abogado', c.abogado);
+      setSelectVal('c_juzgado', c.juzgado);
+      setSelectVal('c_tipoProceso', c.tipoProceso);
+      setSelectVal('c_tipoContrato', c.tipoContrato);
+      setSelectVal('c_causaTerminacion', c.causaTerminacion);
+    }
+  } else {
+    ['expediente','demandante','cedula','ciudad','telefono','demandado','nitDemandado',
+     'radicado','fechaRadicacion','proxAudiencia','cargo','salario','fechaInicio','fechaFin','notas'].forEach(f => {
+      const el = document.getElementById('c_'+f); if (el) el.value = '';
+    });
+  }
+  switchCasoTab('cliente');
+  openModal('modalCaso');
+}
+
+function switchCasoTab(tab, el) {
+  ['cliente','proceso','laboral'].forEach(t => {
+    const d = document.getElementById('casoTab-'+t);
+    if (d) d.style.display = t === tab ? 'block' : 'none';
+  });
+  document.querySelectorAll('#modalCaso .tab').forEach(t => t.classList.remove('active'));
+  if (el) el.classList.add('active');
+  else {
+    const tabs = document.querySelectorAll('#modalCaso .tab');
+    const idx = ['cliente','proceso','laboral'].indexOf(tab);
+    if (tabs[idx]) tabs[idx].classList.add('active');
+  }
+}
+
+function setSelectVal(id, val) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  for (let opt of el.options) { if (opt.value === val || opt.text === val) { el.value = opt.value; return; } }
+}
+
+function saveCaso() {
+  const dem = document.getElementById('c_demandante').value.trim().toUpperCase();
+  if (!dem) { toast('Ingrese el nombre del demandante', 'error'); return; }
+  const editId = document.getElementById('casoEditId').value;
+  const caso = {
+    id: editId || 'caso-' + Date.now(),
+    expediente: document.getElementById('c_expediente').value.trim(),
+    demandante: dem,
+    cedula: document.getElementById('c_cedula').value.trim(),
+    ciudad: document.getElementById('c_ciudad').value.trim().toUpperCase() || DB.config.ciudad,
+    telefono: document.getElementById('c_telefono').value.trim(),
+    demandado: document.getElementById('c_demandado').value.trim().toUpperCase(),
+    nitDemandado: document.getElementById('c_nitDemandado').value.trim(),
+    tipoProceso: document.getElementById('c_tipoProceso').value,
+    abogado: document.getElementById('c_abogado').value,
+    juzgado: document.getElementById('c_juzgado').value,
+    radicado: document.getElementById('c_radicado').value.trim(),
+    fechaRadicacion: document.getElementById('c_fechaRadicacion').value,
+    proxAudiencia: document.getElementById('c_proxAudiencia').value,
+    estado: document.getElementById('c_estado').value,
+    tipoContrato: document.getElementById('c_tipoContrato').value,
+    cargo: document.getElementById('c_cargo').value.trim(),
+    salario: document.getElementById('c_salario').value.trim(),
+    fechaInicio: document.getElementById('c_fechaInicio').value,
+    fechaFin: document.getElementById('c_fechaFin').value,
+    causaTerminacion: document.getElementById('c_causaTerminacion').value,
+    notas: document.getElementById('c_notas').value.trim(),
+  };
+  if (editId) {
+    const idx = DB.casos.findIndex(c => c.id === editId);
+    if (idx >= 0) DB.casos[idx] = caso;
+  } else {
+    DB.casos.push(caso);
+  }
+  saveDB();
+  closeModal('modalCaso');
+  toast(editId ? 'Caso actualizado' : 'Caso registrado', 'success');
+  renderCasos();
+  renderDashboard();
+}
+
+function renderCasos(filter='') {
+  const list = document.getElementById('casosList');
+  let casos = DB.casos;
+  if (filter) {
+    const q = filter.toLowerCase();
+    casos = casos.filter(c =>
+      (c.demandante||'').toLowerCase().includes(q) ||
+      (c.demandado||'').toLowerCase().includes(q) ||
+      (c.expediente||'').toLowerCase().includes(q) ||
+      (c.radicado||'').toLowerCase().includes(q)
+    );
+  }
+  if (!casos.length) {
+    list.innerHTML = `<div class="card" style="text-align:center;padding:40px;color:var(--mist)">
+      <div style="font-size:40px;margin-bottom:12px">📁</div>
+      <div style="font-size:16px;font-weight:600">Sin casos registrados</div>
+      <div style="font-size:13px;margin-top:6px">Haga clic en "+ Nuevo Caso" o sincronice con Google Drive</div>
+    </div>`;
+    return;
+  }
+  list.innerHTML = casos.map(c => `
+    <div class="case-card">
+      <span class="case-num">${c.expediente || '—'}</span>
+      <div class="case-info">
+        <div class="case-client">${c.demandante}</div>
+        <div class="case-type">${c.tipoProceso || ''} contra ${c.demandado || '—'}</div>
+        <div class="case-meta">
+          <span>👤 ${c.abogado ? c.abogado.split(' ').slice(-2).join(' ') : '—'}</span>
+          <span>🏛️ ${c.juzgado ? c.juzgado.split(' ').slice(0,4).join(' ')+'…' : '—'}</span>
+          ${c.proxAudiencia ? '<span>📅 '+fmtDate(c.proxAudiencia)+'</span>' : ''}
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
+        <span class="tag ${c.estado==='Activo'?'tag-active':c.estado==='Cerrado'?'tag-closed':c.estado==='Pendiente'?'tag-pending':'tag-urgent'}">${c.estado}</span>
+        <div style="display:flex;gap:6px;margin-top:4px">
+          <button class="btn btn-outline btn-sm" onclick="editCaso('${c.id}')">✏️</button>
+          <button class="btn btn-gold btn-sm" onclick="goGenerateDoc('${c.id}')">📄 Doc</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteCaso('${c.id}')">🗑️</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function filterCasos(v) { renderCasos(v); }
+function editCaso(id) { openCasoModal(id); }
+function deleteCaso(id) {
+  if (!confirm('¿Eliminar este caso?')) return;
+  DB.casos = DB.casos.filter(c => c.id !== id);
+  saveDB(); renderCasos(); renderDashboard();
+  toast('Caso eliminado');
+}
+function goGenerateDoc(id) {
+  selectedCasoForDoc = id;
+  showPage('documentos', document.querySelector('[onclick*=documentos]'));
+}
+
+// ════════════════════════════════════════
+// DOCUMENTOS
+// ════════════════════════════════════════
+const TEMPLATES = [
+  { id: 'demanda_generica',    name: 'Demanda Genérica',       icon: '⚖️',  desc: 'Ordinario Laboral' },
+  { id: 'demanda_temporales',  name: 'Demanda Temporales',     icon: '🏭',  desc: 'Empresas temporales' },
+  { id: 'demanda_informalidad',name: 'Demanda Informalidad',   icon: '📋',  desc: 'Contrato realidad' },
+  { id: 'demanda_eps',         name: 'Contrato Realidad EPS',  icon: '🏥',  desc: 'EPS' },
+  { id: 'demanda_ejecutiva',   name: 'Demanda Ejecutiva',      icon: '💼',  desc: 'Ejecución de títulos' },
+  { id: 'poder',               name: 'Poder',                  icon: '📜',  desc: 'Poder judicial' },
+  { id: 'contrato',            name: 'Contrato de Servicios',  icon: '🤝',  desc: 'Honorarios' },
+  { id: 'pagare',              name: 'Pagaré',                 icon: '💳',  desc: 'Título valor' },
+  { id: 'derecho_peticion',    name: 'Derecho de Petición',    icon: '📩',  desc: 'Petición formal' },
+  { id: 'tutela',              name: 'Tutela',                 icon: '🛡️',  desc: 'Acción de tutela' },
+  { id: 'apelacion',           name: 'Recurso de Apelación',   icon: '📤',  desc: 'Segunda instancia' },
+  { id: 'suplica',             name: 'Recurso de Súplica',     icon: '📨',  desc: 'Impugnación' },
+  { id: 'queja',               name: 'Recurso de Queja',       icon: '📢',  desc: 'Ante superior' },
+  { id: 'nulidad',             name: 'Nulidad Procesal',       icon: '🚫',  desc: 'Solicitud nulidad' },
+  { id: 'suspension',          name: 'Suspensión del Proceso', icon: '⏸️',  desc: 'Suspensión' },
+  { id: 'memorial',            name: 'Memorial / Escrito',     icon: '📝',  desc: 'Encabezado memorial' },
+  { id: 'informe_ejecutivo',   name: 'Informe Ejecutivo',      icon: '📊',  desc: 'Reporte del caso' },
+  { id: 'prep_audiencia',      name: 'Preparación Audiencia',  icon: '🎯',  desc: 'Guía de audiencia' },
+  { id: 'reporte_audiencia',   name: 'Reporte Audiencia',      icon: '🗒️',  desc: 'Post-audiencia' },
+];
+
+function renderDocumentos() {
+  // Cases list in sidebar
+  const cl = document.getElementById('docCasosList');
+  if (!DB.casos.length) {
+    cl.innerHTML = '<p style="font-size:12px;color:var(--mist);padding:8px">Sin casos. Regístrelos primero.</p>';
+  } else {
+    cl.innerHTML = DB.casos.map(c => `
+      <div class="case-card" style="padding:10px;margin-bottom:6px;${selectedCasoForDoc===c.id?'border-color:var(--gold);background:var(--gold-pale)':''}"
+           onclick="selectDocCaso('${c.id}')">
+        <div>
+          <div style="font-weight:600;font-size:13px">${c.demandante}</div>
+          <div style="font-size:11px;color:var(--mist)">${c.expediente||'Sin exp.'} · ${c.estado}</div>
+        </div>
+      </div>`).join('');
+  }
+
+  // Docs grid
+  const dg = document.getElementById('docsGrid');
+  dg.innerHTML = TEMPLATES.map(t => `
+    <div class="doc-btn" onclick="generateDoc('${t.id}')">
+      <div class="doc-icon">${t.icon}</div>
+      <div class="doc-name">${t.name}</div>
+      <div class="doc-desc">${t.desc}</div>
+    </div>`).join('');
+
+  // Update caso info
+  updateDocCasoInfo();
+}
+
+function selectDocCaso(id) {
+  selectedCasoForDoc = id;
+  renderDocumentos();
+}
+
+function filterDocCasos(q) {
+  const items = document.querySelectorAll('#docCasosList .case-card');
+  items.forEach(item => {
+    item.style.display = item.textContent.toLowerCase().includes(q.toLowerCase()) ? '' : 'none';
+  });
+}
+
+function updateDocCasoInfo() {
+  const el = document.getElementById('docCasoInfo');
+  if (!selectedCasoForDoc) { el.innerHTML = '<span style="color:var(--mist)">Ningún caso seleccionado</span>'; return; }
+  const c = DB.casos.find(x => x.id === selectedCasoForDoc);
+  if (!c) return;
+  el.innerHTML = `
+    <div style="font-weight:600;color:var(--steel)">${c.demandante}</div>
+    <div style="margin-top:4px">🏢 ${c.demandado||'—'}</div>
+    <div>👤 ${c.abogado ? c.abogado.split(' ').slice(-2).join(' ') : '—'}</div>
+    <div>🏛️ ${c.juzgado ? c.juzgado.split(' ').slice(0,3).join(' ')+'…' : '—'}</div>
+    <div style="margin-top:8px">
+      <span class="tag ${c.estado==='Activo'?'tag-active':'tag-pending'}">${c.estado}</span>
+    </div>`;
+}
+
+function generateDoc(templateId) {
+  if (!selectedCasoForDoc) {
+    toast('Seleccione un caso primero', 'error');
+    return;
+  }
+  const caso = DB.casos.find(c => c.id === selectedCasoForDoc);
+  if (!caso) { toast('Caso no encontrado', 'error'); return; }
+  const tmpl = TEMPLATES.find(t => t.id === templateId);
+  const content = buildTemplate(templateId, caso);
+  document.getElementById('modalDocTitle').textContent = tmpl.name;
+  document.getElementById('modalDocSubtitle').textContent = `${caso.demandante} vs. ${caso.demandado||'—'}`;
+  document.getElementById('docPreviewContent').innerHTML = content;
+  docsGenerados++;
+  saveDB();
+  openModal('modalDoc');
+}
+
+// ════════════════════════════════════════
+// TEMPLATE ENGINE
+// ════════════════════════════════════════
+function fmtDate(d) {
+  if (!d) return '_______________';
+  const dt = new Date(d + 'T00:00:00');
+  return dt.toLocaleDateString('es-CO', { day: '2-digit', month: '2-digit', year: 'numeric' });
+}
+function fmtDateLong(d) {
+  if (!d) return '_______________';
+  const dt = new Date(d + 'T00:00:00');
+  return dt.toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+function v(val, fallback='_______________') { return val && val.trim() ? val : fallback; }
+function getAbogadoData(nombre) {
+  return DB.abogados.find(a => a.nombre === nombre) || { nombre: DB.config.abogadoPrincipal, cedula: DB.config.cedulaAbogado, tarjeta: DB.config.tarjeta };
+}
+
+function buildTemplate(id, c) {
+  const ab = getAbogadoData(c.abogado);
+  const ciudad = v(c.ciudad, DB.config.ciudad);
+  const juzgado = v(c.juzgado, 'JUEZ LABORAL DEL CIRCUITO DE BOGOTÁ D.C. (REPARTO)');
+  const despacho = DB.config.despacho;
+  const hoy = fmtDateLong(new Date().toISOString().split('T')[0]);
+
+  const header = `<h3>${despacho}</h3>
+<p style="text-align:center;font-weight:bold">${juzgado.toUpperCase()}</p>
+<p style="text-align:center;font-weight:bold">E. &nbsp;&nbsp;&nbsp; S. &nbsp;&nbsp;&nbsp; D.</p>
+<p>&nbsp;</p>`;
+
+  const abogadoBlock = `Quien suscribe, <strong>${v(ab.nombre)}</strong> identificado(a) con cédula de ciudadanía No. <strong>${v(ab.cedula)}</strong> con tarjeta profesional No. <strong>${v(ab.tarjeta)}</strong> del Consejo Superior de la Judicatura,`;
+
+  if (id === 'poder') {
+    return `${header}
+<p style="text-align:center"><strong>PODER ESPECIAL</strong></p>
+<p>&nbsp;</p>
+<p>Yo, <strong>${v(c.demandante)}</strong>, identificado(a) con cédula de ciudadanía número <strong>${v(c.cedula)}</strong>, domiciliado(a) en la ciudad de <strong>${ciudad}</strong>, por medio del presente escrito confiero poder especial, amplio y suficiente a <strong>${v(ab.nombre)}</strong>, abogado en ejercicio, identificado(a) con cédula de ciudadanía No. <strong>${v(ab.cedula)}</strong> y tarjeta profesional No. <strong>${v(ab.tarjeta)}</strong> del Consejo Superior de la Judicatura, para que en mi nombre y representación adelante las acciones judiciales y/o extrajudiciales tendientes a reclamar los derechos laborales que me asisten contra <strong>${v(c.demandado)}</strong>.</p>
+<p>&nbsp;</p>
+<p>Para tal efecto, le confiero todas las facultades que la ley permite delegar en los apoderados judiciales, incluyendo las de recibir, sustituir, renunciar y desistir.</p>
+<p>&nbsp;</p>
+<p>En fe de lo anterior, firmo en la ciudad de <strong>${ciudad}</strong>, a los <strong>${hoy}</strong>.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>_______________________________</p>
+<p><strong>${v(c.demandante)}</strong></p>
+<p>C.C. No. <strong>${v(c.cedula)}</strong></p>`;
+  }
+
+  if (id === 'derecho_peticion') {
+    return `${header}
+<p style="text-align:center"><strong>DERECHO DE PETICIÓN</strong></p>
+<p>&nbsp;</p>
+<p><strong>REFERENCIA:</strong> Derecho de petición promovido por <strong>${v(c.demandante)}</strong> ante <strong>${v(c.demandado)}</strong></p>
+<p>&nbsp;</p>
+<p>${abogadoBlock} obrando en nombre y representación de <strong>${v(c.demandante)}</strong>, identificado(a) con cédula de ciudadanía No. <strong>${v(c.cedula)}</strong>, con fundamento en el artículo 23 de la Constitución Política y la Ley 1755 de 2015, respetuosamente me permito elevar el siguiente DERECHO DE PETICIÓN:</p>
+<p>&nbsp;</p>
+<p><strong>I. HECHOS</strong></p>
+<p>1. Mi representado(a) <strong>${v(c.demandante)}</strong> prestó sus servicios a la empresa <strong>${v(c.demandado)}</strong> desde el día <strong>${fmtDate(c.fechaInicio)}</strong> hasta el día <strong>${fmtDate(c.fechaFin)}</strong>, desempeñando el cargo de <strong>${v(c.cargo)}</strong>.</p>
+<p>&nbsp;</p>
+<p><strong>II. PETICIÓN</strong></p>
+<p>De la manera más respetuosa, solicito a ustedes suministrar la siguiente información:</p>
+<p>1. Copia de la historia laboral completa de mi representado(a).</p>
+<p>2. Copia de los desprendibles de nómina durante la vigencia de la relación laboral.</p>
+<p>3. Constancia de pago de aportes al sistema de seguridad social.</p>
+<p>&nbsp;</p>
+<p>Conforme a la ley, solicito respuesta dentro de los <strong>quince (15) días hábiles</strong> siguientes a la radicación del presente derecho de petición.</p>
+<p>&nbsp;</p>
+<p>En ${ciudad}, a ${hoy}.</p>
+<p>&nbsp;</p>
+<p>Cordialmente,</p>
+<p><strong>${v(ab.nombre)}</strong></p>
+<p>T.P. No. ${v(ab.tarjeta)}</p>`;
+  }
+
+  if (id === 'memorial') {
+    return `${header}
+<p><strong>REFERENCIA:</strong> ${v(c.tipoProceso)} de <strong>${v(c.demandante)}</strong> contra <strong>${v(c.demandado)}</strong></p>
+<p><strong>RADICADO:</strong> ${v(c.radicado)}</p>
+<p>&nbsp;</p>
+<p>${abogadoBlock} obrando como apoderado judicial de la parte demandante <strong>${v(c.demandante)}</strong>, identificado(a) con cédula de ciudadanía No. <strong>${v(c.cedula)}</strong>, respetuosamente me permito presentar el siguiente memorial:</p>
+<p>&nbsp;</p>
+<p>[CONTENIDO DEL MEMORIAL]</p>
+<p>&nbsp;</p>
+<p>En ${ciudad}, a ${hoy}.</p>
+<p>&nbsp;</p>
+<p><strong>${v(ab.nombre)}</strong></p>
+<p>C.C. No. ${v(ab.cedula)} — T.P. No. ${v(ab.tarjeta)}</p>`;
+  }
+
+  if (id === 'informe_ejecutivo') {
+    return `<h3>INFORME EJECUTIVO DEL CASO</h3>
+<p><strong>${despacho}</strong></p>
+<p>&nbsp;</p>
+<p><strong>EXPEDIENTE:</strong> ${v(c.expediente)}</p>
+<p><strong>CLIENTE:</strong> ${v(c.demandante)} (C.C. ${v(c.cedula)})</p>
+<p><strong>DEMANDADO:</strong> ${v(c.demandado)} (NIT ${v(c.nitDemandado)})</p>
+<p><strong>TIPO DE PROCESO:</strong> ${v(c.tipoProceso)}</p>
+<p><strong>ABOGADO:</strong> ${v(ab.nombre)}</p>
+<p><strong>JUZGADO:</strong> ${juzgado}</p>
+<p><strong>RADICADO:</strong> ${v(c.radicado)}</p>
+<p><strong>ESTADO:</strong> ${v(c.estado)}</p>
+<p>&nbsp;</p>
+<p><strong>DATOS LABORALES</strong></p>
+<p><strong>Cargo:</strong> ${v(c.cargo)}</p>
+<p><strong>Inicio:</strong> ${fmtDate(c.fechaInicio)}</p>
+<p><strong>Terminación:</strong> ${fmtDate(c.fechaFin)}</p>
+<p><strong>Causa:</strong> ${v(c.causaTerminacion)}</p>
+<p><strong>Salario:</strong> ${v(c.salario)}</p>
+<p>&nbsp;</p>
+<p><strong>OBSERVACIONES</strong></p>
+<p>${v(c.notas, 'Sin observaciones registradas.')}</p>
+<p>&nbsp;</p>
+<p><em>Informe generado el ${hoy} por el Robot Jurídico - ${despacho}</em></p>`;
+  }
+
+  if (id === 'prep_audiencia') {
+    return `<h3>PREPARACIÓN DE AUDIENCIA</h3>
+<p><strong>Caso:</strong> ${v(c.demandante)} vs. ${v(c.demandado)}</p>
+<p><strong>Fecha Audiencia:</strong> ${fmtDate(c.proxAudiencia)}</p>
+<p><strong>Juzgado:</strong> ${juzgado}</p>
+<p>&nbsp;</p>
+<p><strong>I. HECHOS RELEVANTES A RECORDAR</strong></p>
+<p>1. Vinculación laboral desde ${fmtDate(c.fechaInicio)} hasta ${fmtDate(c.fechaFin)}.</p>
+<p>2. Cargo: ${v(c.cargo)}. Salario: ${v(c.salario)}.</p>
+<p>3. Terminación: ${v(c.causaTerminacion)}.</p>
+<p>&nbsp;</p>
+<p><strong>II. PRETENSIONES A DEFENDER</strong></p>
+<p>[Complete según el caso]</p>
+<p>&nbsp;</p>
+<p><strong>III. PRUEBAS A PRESENTAR</strong></p>
+<p>□ Contrato de trabajo</p>
+<p>□ Carta de terminación</p>
+<p>□ Desprendibles de nómina</p>
+<p>□ Certificaciones</p>
+<p>&nbsp;</p>
+<p><strong>IV. TESTIGOS</strong></p>
+<p>[Nombre y datos de testigos]</p>
+<p>&nbsp;</p>
+<p><strong>V. NOTAS</strong></p>
+<p>${v(c.notas, '—')}</p>`;
+  }
+
+  if (id === 'tutela') {
+    return `${header}
+<p style="text-align:center"><strong>ACCIÓN DE TUTELA</strong></p>
+<p>&nbsp;</p>
+<p><strong>REFERENCIA:</strong> Acción de tutela instaurada por <strong>${v(c.demandante)}</strong> contra <strong>${v(c.demandado)}</strong></p>
+<p>&nbsp;</p>
+<p>${abogadoBlock} obrando en nombre y representación de <strong>${v(c.demandante)}</strong>, identificado(a) con cédula de ciudadanía No. <strong>${v(c.cedula)}</strong>, domiciliado(a) en la ciudad de <strong>${ciudad}</strong>, respetuosamente interpongo ACCIÓN DE TUTELA contra <strong>${v(c.demandado)}</strong>, por violación de los derechos fundamentales de mi representado(a), con fundamento en los siguientes:</p>
+<p>&nbsp;</p>
+<p><strong>HECHOS</strong></p>
+<p>1. Mi representado(a) sostuvo una relación laboral con <strong>${v(c.demandado)}</strong> desde el <strong>${fmtDate(c.fechaInicio)}</strong>.</p>
+<p>2. La relación laboral terminó el día <strong>${fmtDate(c.fechaFin)}</strong> por <strong>${v(c.causaTerminacion)}</strong>.</p>
+<p>3. [Describa la vulneración del derecho fundamental]</p>
+<p>&nbsp;</p>
+<p><strong>DERECHOS FUNDAMENTALES VULNERADOS</strong></p>
+<p>□ Derecho de petición (Art. 23 C.P.)</p>
+<p>□ Mínimo vital (Art. 53 C.P.)</p>
+<p>□ Seguridad social (Art. 48 C.P.)</p>
+<p>&nbsp;</p>
+<p><strong>PRETENSIONES</strong></p>
+<p>1. Que se amparen los derechos fundamentales de mi representado(a).</p>
+<p>2. Que se ordene a <strong>${v(c.demandado)}</strong> dar cumplimiento a [la obligación correspondiente].</p>
+<p>&nbsp;</p>
+<p>En ${ciudad}, a ${hoy}.</p>
+<p><strong>${v(ab.nombre)}</strong> — T.P. ${v(ab.tarjeta)}</p>`;
+  }
+
+  // DEFAULT: Demanda Genérica (y variantes)
+  const demandaTitulo = {
+    'demanda_temporales': 'DEMANDA ORDINARIO LABORAL — EMPRESAS TEMPORALES',
+    'demanda_informalidad': 'DEMANDA ORDINARIO LABORAL — CONTRATO REALIDAD',
+    'demanda_eps': 'DEMANDA — CONTRATO REALIDAD EPS',
+    'demanda_ejecutiva': 'DEMANDA EJECUTIVA LABORAL',
+    'apelacion': 'RECURSO DE APELACIÓN',
+    'suplica': 'RECURSO DE SÚPLICA',
+    'queja': 'RECURSO DE QUEJA',
+    'nulidad': 'SOLICITUD DE NULIDAD PROCESAL',
+    'suspension': 'SOLICITUD DE SUSPENSIÓN DEL PROCESO',
+  }[id] || 'DEMANDA ORDINARIO LABORAL DE PRIMERA INSTANCIA';
+
+  return `${header}
+<p style="text-align:center"><strong>REFERENCIA:</strong> Proceso ${v(c.tipoProceso)} promovido por <strong>${v(c.demandante)}</strong> contra <strong>${v(c.demandado)}</strong></p>
+<p>&nbsp;</p>
+<p>${abogadoBlock} obrando en nombre y en representación de la parte demandante <strong>${v(c.demandante)}</strong> identificado(a) con cédula de ciudadanía número <strong>${v(c.cedula)}</strong>, según poder que adjunto, me permito formular <strong>${demandaTitulo}</strong> contra <strong>${v(c.demandado)}</strong> identificado(a) con NIT <strong>${v(c.nitDemandado)}</strong>, para que mediante el trámite correspondiente se efectúen las declaraciones y condenas relacionadas en el <em>petitum</em> de esta demanda.</p>
+<p>&nbsp;</p>
+<p><strong>I. PARTES Y REPRESENTANTES</strong></p>
+<p><strong>1.1 PARTE DEMANDANTE:</strong></p>
+<p>${v(c.demandante)} identificado(a) con cédula de ciudadanía número ${v(c.cedula)}, domiciliado(a) en la ciudad de ${ciudad}. Actuando como apoderado(a) judicial, ${v(ab.nombre)} identificado(a) con cédula ciudadanía No. ${v(ab.cedula)} y con tarjeta profesional No. ${v(ab.tarjeta)} del Consejo Superior de la Judicatura.</p>
+<p>&nbsp;</p>
+<p><strong>1.2 PARTE DEMANDADA:</strong></p>
+<p>${v(c.demandado)} con domicilio en el municipio de ${ciudad} identificado(a) con NIT ${v(c.nitDemandado)}.</p>
+<p>&nbsp;</p>
+<p><strong>II. HECHOS</strong></p>
+<p>1. La fecha de inicio de la relación laboral existente entre la parte demandante <strong>${v(c.demandante)}</strong> y la parte demandada <strong>${v(c.demandado)}</strong> fue el día <strong>${fmtDate(c.fechaInicio)}</strong>.</p>
+<p>2. El tipo de contrato de trabajo fue <strong>${v(c.tipoContrato)}</strong>.</p>
+<p>3. La labor desempeñada fue la de <strong>${v(c.cargo)}</strong>.</p>
+<p>4. El salario devengado fue de <strong>${v(c.salario)}</strong>.</p>
+<p>5. El contrato de trabajo llegó a su fin el día <strong>${fmtDate(c.fechaFin)}</strong>, en razón a <strong>${v(c.causaTerminacion)}</strong>.</p>
+<p>6. Terminado el contrato, a mi representado(a) <strong>${v(c.demandante)}</strong> no le fue pagada la liquidación completa de salarios y prestaciones sociales.</p>
+<p>&nbsp;</p>
+<p><strong>III. PRETENSIONES</strong></p>
+<p><strong>3.1 PRINCIPALES — DECLARATIVAS</strong></p>
+<p>1. Declarar que entre <strong>${v(c.demandado)}</strong> y el(la) señor(a) <strong>${v(c.demandante)}</strong>, existió un contrato de trabajo desde el día <strong>${fmtDate(c.fechaInicio)}</strong> hasta el día <strong>${fmtDate(c.fechaFin)}</strong>.</p>
+<p>2. Que se declare que mi representado(a) fue despedido(a) sin justa causa.</p>
+<p>&nbsp;</p>
+<p><strong>3.2 CONDENATORIAS</strong></p>
+<p>1. Se condene a <strong>${v(c.demandado)}</strong> al pago de cesantías, intereses sobre cesantías, prima de servicios, vacaciones e indemnización por despido sin justa causa.</p>
+<p>2. Se condene al pago de la sanción moratoria establecida en el artículo 65 del C.S.T.</p>
+<p>&nbsp;</p>
+<p><strong>IV. FUNDAMENTO DE DERECHO</strong></p>
+<p>Artículos 22, 23, 24, 25, 55 y siguientes del Código Sustantivo del Trabajo; Ley 789 de 2002; Ley 50 de 1990.</p>
+<p>&nbsp;</p>
+<p><strong>V. PRUEBAS</strong></p>
+<p>□ Contrato de trabajo (o confesión de su existencia)</p>
+<p>□ Carta de terminación del contrato</p>
+<p>□ Desprendibles de nómina</p>
+<p>□ Liquidación final de prestaciones sociales</p>
+<p>□ Testimonios</p>
+<p>&nbsp;</p>
+<p><strong>VI. COMPETENCIA</strong></p>
+<p>Es competente para conocer del presente proceso el señor(a) Juez Laboral del Circuito de <strong>${ciudad}</strong>, de conformidad con los artículos 2, 5 y 28 del C.P.T.S.S.</p>
+<p>&nbsp;</p>
+<p><strong>VII. NOTIFICACIONES</strong></p>
+<p>La parte demandante recibirá notificaciones en la dirección del despacho judicial. La parte demandada <strong>${v(c.demandado)}</strong> en su domicilio.</p>
+<p>&nbsp;</p>
+<p>En ${ciudad}, a ${hoy}.</p>
+<p>&nbsp;</p>
+<p>Atentamente,</p>
+<p>&nbsp;</p>
+<p><strong>${v(ab.nombre)}</strong></p>
+<p>C.C. No. ${v(ab.cedula)}</p>
+<p>T.P. No. ${v(ab.tarjeta)} del Consejo Superior de la Judicatura</p>`;
+}
+
+function copyDoc() {
+  const text = document.getElementById('docPreviewContent').innerText;
+  navigator.clipboard.writeText(text).then(() => toast('Texto copiado al portapapeles', 'success'));
+}
+
+function printDoc() {
+  const title = document.getElementById('modalDocTitle').textContent;
+  const content = document.getElementById('docPreviewContent').innerHTML;
+  const win = window.open('', '_blank');
+  win.document.write(`<!DOCTYPE html><html><head><title>${title}</title>
+  <style>body{font-family:'Times New Roman',serif;font-size:12pt;line-height:1.7;margin:2cm;color:#000}
+  h3{text-align:center;font-size:13pt}p{margin:4px 0}@media print{@page{margin:2cm}}</style>
+  </head><body>${content}</body></html>`);
+  win.document.close();
+  win.print();
+}
+
+// ════════════════════════════════════════
+// CALENDARIO
+// ════════════════════════════════════════
+function renderCalendario() {
+  const months = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  document.getElementById('calMonthLabel').textContent = months[currentCalMonth] + ' ' + currentCalYear;
+
+  // Day headers
+  const dh = document.getElementById('calDayHeaders');
+  dh.innerHTML = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'].map(d => `<div class="cal-day-header">${d}</div>`).join('');
+
+  // Days
+  const first = new Date(currentCalYear, currentCalMonth, 1).getDay();
+  const days = new Date(currentCalYear, currentCalMonth+1, 0).getDate();
+  const today = new Date();
+  const evDates = new Set(DB.eventos.map(e => e.fecha));
+
+  let html = '';
+  for (let i = 0; i < first; i++) html += `<div class="cal-day other-month"></div>`;
+  for (let d = 1; d <= days; d++) {
+    const dateStr = `${currentCalYear}-${String(currentCalMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isToday = d === today.getDate() && currentCalMonth === today.getMonth() && currentCalYear === today.getFullYear();
+    const hasEvent = evDates.has(dateStr);
+    html += `<div class="cal-day ${isToday?'today':''} ${hasEvent?'has-event':''}" title="${hasEvent?'Tiene evento':''}">${d}</div>`;
+  }
+  document.getElementById('calGrid').innerHTML = html;
+
+  // Events list
+  const now = new Date();
+  const upcoming = DB.eventos.filter(e => new Date(e.fecha+'T00:00:00') >= new Date(now.toDateString()))
+    .sort((a,b) => new Date(a.fecha)-new Date(b.fecha)).slice(0,10);
+  const el = document.getElementById('eventosList');
+  if (!upcoming.length) { el.innerHTML = '<p style="font-size:13px;color:var(--mist)">Sin eventos próximos</p>'; return; }
+  el.innerHTML = upcoming.map(e => {
+    const d = new Date(e.fecha+'T00:00:00');
+    const colors = { audiencia:'#1a3a6b', vencimiento:'#c0392b', entrega:'#1a6b47', otro:'var(--gold)' };
+    return `<div class="event-item">
+      <div class="event-date-box" style="background:${colors[e.tipo]||'var(--steel)'}">
+        <span style="font-size:9px">${d.toLocaleDateString('es',{month:'short'})}</span>
+        <span class="day">${d.getDate()}</span>
+      </div>
+      <div style="flex:1">
+        <div style="font-weight:600;font-size:13px">${e.titulo}</div>
+        <div style="font-size:11px;color:var(--mist)">${e.hora||''} · ${e.casoLabel||'Sin caso'}</div>
+      </div>
+      <button class="btn btn-danger btn-sm" onclick="deleteEvento('${e.id}')">🗑️</button>
+    </div>`;
+  }).join('');
+}
+
+function changeMonth(dir) {
+  currentCalMonth += dir;
+  if (currentCalMonth > 11) { currentCalMonth = 0; currentCalYear++; }
+  if (currentCalMonth < 0) { currentCalMonth = 11; currentCalYear--; }
+  renderCalendario();
+}
+
+function openEventoModal() {
+  const evCaso = document.getElementById('ev_caso');
+  evCaso.innerHTML = '<option value="">— Sin caso —</option>' + DB.casos.map(c => `<option value="${c.id}">${c.demandante} (${c.expediente||'sin exp.'})</option>`).join('');
+  document.getElementById('ev_titulo').value = '';
+  document.getElementById('ev_fecha').value = '';
+  document.getElementById('ev_hora').value = '';
+  document.getElementById('ev_notas').value = '';
+  openModal('modalEvento');
+}
+
+function saveEvento() {
+  const titulo = document.getElementById('ev_titulo').value.trim();
+  if (!titulo) { toast('Ingrese el título del evento', 'error'); return; }
+  const casoId = document.getElementById('ev_caso').value;
+  const caso = DB.casos.find(c => c.id === casoId);
+  DB.eventos.push({
+    id: 'ev-' + Date.now(),
+    titulo,
+    fecha: document.getElementById('ev_fecha').value,
+    hora: document.getElementById('ev_hora').value,
+    tipo: document.getElementById('ev_tipo').value,
+    notas: document.getElementById('ev_notas').value,
+    caso: casoId,
+    casoLabel: caso ? caso.demandante : '',
+  });
+  saveDB(); closeModal('modalEvento'); renderCalendario(); renderDashboard();
+  toast('Evento guardado', 'success');
+}
+
+function deleteEvento(id) {
+  DB.eventos = DB.eventos.filter(e => e.id !== id);
+  saveDB(); renderCalendario(); renderDashboard();
+}
+
+// ════════════════════════════════════════
+// TAREAS
+// ════════════════════════════════════════
+let tareaFilter = 'pendientes';
+
+function renderTareas(filter) {
+  tareaFilter = filter || tareaFilter;
+  let tareas = DB.tareas;
+  if (tareaFilter === 'pendientes') tareas = tareas.filter(t => !t.done);
+  if (tareaFilter === 'completadas') tareas = tareas.filter(t => t.done);
+  tareas = tareas.sort((a,b) => {
+    const p = { alta:0, media:1, baja:2 };
+    return (p[a.prioridad]||1) - (p[b.prioridad]||1);
+  });
+  const list = document.getElementById('tareasList');
+  if (!tareas.length) {
+    list.innerHTML = `<div style="text-align:center;padding:40px;color:var(--mist);font-size:14px">No hay tareas ${tareaFilter}</div>`;
+    return;
+  }
+  list.innerHTML = tareas.map(t => {
+    const pc = { alta:'p-alta', media:'p-media', baja:'p-baja' }[t.prioridad]||'p-media';
+    return `<div class="task-item">
+      <div class="task-checkbox ${t.done?'done':''}" onclick="toggleTarea('${t.id}')">${t.done?'✓':''}</div>
+      <div style="flex:1">
+        <div class="task-text ${t.done?'done-text':''}">${t.texto}</div>
+        <div style="display:flex;gap:12px;margin-top:3px;flex-wrap:wrap">
+          ${t.casoLabel ? `<span class="task-case">📁 ${t.casoLabel}</span>` : ''}
+          ${t.abogado ? `<span class="task-meta">👤 ${t.abogado.split(' ').slice(-2).join(' ')}</span>` : ''}
+          ${t.fecha ? `<span class="task-meta">📅 ${fmtDate(t.fecha)}</span>` : ''}
+        </div>
+      </div>
+      <span class="task-priority ${pc}">${t.prioridad||'media'}</span>
+      <button class="btn btn-danger btn-sm" onclick="deleteTarea('${t.id}')" style="margin-left:8px">🗑️</button>
+    </div>`;
+  }).join('');
+}
+
+function filterTareasTab(f, el) {
+  document.querySelectorAll('#page-tareas .tab').forEach(t => t.classList.remove('active'));
+  if (el) el.classList.add('active');
+  renderTareas(f);
+}
+
+function openTareaModal() {
+  const tc = document.getElementById('t_caso');
+  tc.innerHTML = '<option value="">— Sin caso —</option>' + DB.casos.map(c => `<option value="${c.id}">${c.demandante}</option>`).join('');
+  const ta = document.getElementById('t_abogado');
+  ta.innerHTML = '<option value="">— Sin asignar —</option>' + DB.abogados.map(a => `<option value="${a.nombre}">${a.nombre.split(' ').slice(-2).join(' ')}</option>`).join('');
+  document.getElementById('t_texto').value = '';
+  document.getElementById('t_fecha').value = '';
+  openModal('modalTarea');
+}
+
+function saveTarea() {
+  const texto = document.getElementById('t_texto').value.trim();
+  if (!texto) { toast('Ingrese la descripción', 'error'); return; }
+  const casoId = document.getElementById('t_caso').value;
+  const caso = DB.casos.find(c => c.id === casoId);
+  DB.tareas.push({
+    id: 'ta-' + Date.now(),
+    texto,
+    fecha: document.getElementById('t_fecha').value,
+    abogado: document.getElementById('t_abogado').value,
+    caso: casoId,
+    casoLabel: caso ? caso.demandante : '',
+    prioridad: document.getElementById('t_prioridad').value,
+    done: false,
+  });
+  saveDB(); closeModal('modalTarea'); renderTareas(); renderDashboard();
+  document.getElementById('badgeTareas').textContent = DB.tareas.filter(t=>!t.done).length;
+  toast('Tarea creada', 'success');
+}
+
+function toggleTarea(id) {
+  const t = DB.tareas.find(x => x.id === id);
+  if (t) { t.done = !t.done; saveDB(); renderTareas(); renderDashboard(); }
+}
+
+function deleteTarea(id) {
+  DB.tareas = DB.tareas.filter(t => t.id !== id);
+  saveDB(); renderTareas(); renderDashboard();
+}
+
+// ════════════════════════════════════════
+// ABOGADOS
+// ════════════════════════════════════════
+function renderAbogados() {
+  const el = document.getElementById('abogadosTable');
+  el.innerHTML = `<div class="table-wrap"><table>
+    <thead><tr>
+      <th>Nombre</th><th>Cédula</th><th>T.P.</th><th>Email</th><th>Acciones</th>
+    </tr></thead>
+    <tbody>${DB.abogados.map(a => `<tr>
+      <td><strong>${a.nombre}</strong></td>
+      <td>${a.cedula||'—'}</td>
+      <td>${a.tarjeta||'—'}</td>
+      <td>${a.email||'—'}</td>
+      <td>
+        <button class="btn btn-outline btn-sm" onclick="editAbogado('${a.id}')">✏️</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteAbogado('${a.id}')">🗑️</button>
+      </td>
+    </tr>`).join('')}</tbody>
+  </table></div>`;
+}
+
+function openAbogadoModal(id) {
+  document.getElementById('ab_id').value = id || '';
+  if (id) {
+    const a = DB.abogados.find(x => x.id === id);
+    if (a) {
+      document.getElementById('ab_nombre').value = a.nombre || '';
+      document.getElementById('ab_cedula').value = a.cedula || '';
+      document.getElementById('ab_tarjeta').value = a.tarjeta || '';
+      document.getElementById('ab_email').value = a.email || '';
+      document.getElementById('ab_tel').value = a.tel || '';
+    }
+  } else {
+    ['ab_nombre','ab_cedula','ab_tarjeta','ab_email','ab_tel'].forEach(f => document.getElementById(f).value = '');
+  }
+  openModal('modalAbogado');
+}
+function editAbogado(id) { openAbogadoModal(id); }
+
+function saveAbogado() {
+  const nombre = document.getElementById('ab_nombre').value.trim().toUpperCase();
+  if (!nombre) { toast('Ingrese el nombre', 'error'); return; }
+  const editId = document.getElementById('ab_id').value;
+  const ab = {
+    id: editId || 'ab-' + Date.now(),
+    nombre,
+    cedula: document.getElementById('ab_cedula').value.trim(),
+    tarjeta: document.getElementById('ab_tarjeta').value.trim(),
+    email: document.getElementById('ab_email').value.trim(),
+    tel: document.getElementById('ab_tel').value.trim(),
+  };
+  if (editId) {
+    const idx = DB.abogados.findIndex(a => a.id === editId);
+    if (idx>=0) DB.abogados[idx] = ab;
+  } else DB.abogados.push(ab);
+  saveDB(); closeModal('modalAbogado'); renderAbogados();
+  toast('Abogado guardado', 'success');
+}
+
+function deleteAbogado(id) {
+  if (!confirm('¿Eliminar abogado?')) return;
+  DB.abogados = DB.abogados.filter(a => a.id !== id);
+  saveDB(); renderAbogados();
+}
+
+// ════════════════════════════════════════
+// JUZGADOS
+// ════════════════════════════════════════
+function renderJuzgados() {
+  const el = document.getElementById('juzgadosTable');
+  el.innerHTML = `<div class="table-wrap"><table>
+    <thead><tr>
+      <th>Nombre</th><th>Ciudad</th><th>Juez</th><th>Dirección</th><th>Acciones</th>
+    </tr></thead>
+    <tbody>${DB.juzgados.map(j => `<tr>
+      <td><strong>${j.nombre}</strong></td>
+      <td>${j.ciudad||'—'}</td>
+      <td>${j.juez||'—'}</td>
+      <td>${j.direccion||'—'}</td>
+      <td>
+        <button class="btn btn-outline btn-sm" onclick="editJuzgado('${j.id}')">✏️</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteJuzgado('${j.id}')">🗑️</button>
+      </td>
+    </tr>`).join('')}</tbody>
+  </table></div>`;
+}
+
+function openJuzgadoModal(id) {
+  document.getElementById('jz_id').value = id || '';
+  if (id) {
+    const j = DB.juzgados.find(x => x.id === id);
+    if (j) {
+      document.getElementById('jz_nombre').value = j.nombre || '';
+      document.getElementById('jz_ciudad').value = j.ciudad || '';
+      document.getElementById('jz_direccion').value = j.direccion || '';
+      document.getElementById('jz_juez').value = j.juez || '';
+      document.getElementById('jz_tel').value = j.tel || '';
+    }
+  } else {
+    ['jz_nombre','jz_direccion','jz_juez','jz_tel'].forEach(f => document.getElementById(f).value = '');
+    document.getElementById('jz_ciudad').value = DB.config.ciudad || 'BOGOTÁ D.C.';
+  }
+  openModal('modalJuzgado');
+}
+function editJuzgado(id) { openJuzgadoModal(id); }
+
+function saveJuzgado() {
+  const nombre = document.getElementById('jz_nombre').value.trim().toUpperCase();
+  if (!nombre) { toast('Ingrese el nombre', 'error'); return; }
+  const editId = document.getElementById('jz_id').value;
+  const jz = {
+    id: editId || 'jz-' + Date.now(),
+    nombre,
+    ciudad: document.getElementById('jz_ciudad').value.trim().toUpperCase(),
+    direccion: document.getElementById('jz_direccion').value.trim(),
+    juez: document.getElementById('jz_juez').value.trim().toUpperCase(),
+    tel: document.getElementById('jz_tel').value.trim(),
+  };
+  if (editId) {
+    const idx = DB.juzgados.findIndex(j => j.id === editId);
+    if (idx>=0) DB.juzgados[idx] = jz;
+  } else DB.juzgados.push(jz);
+  saveDB(); closeModal('modalJuzgado'); renderJuzgados();
+  toast('Juzgado guardado', 'success');
+}
+
+function deleteJuzgado(id) {
+  if (!confirm('¿Eliminar juzgado?')) return;
+  DB.juzgados = DB.juzgados.filter(j => j.id !== id);
+  saveDB(); renderJuzgados();
+}
+
+// ════════════════════════════════════════
+// CONFIGURACIÓN
+// ════════════════════════════════════════
+function loadConfigForm() {
+  document.getElementById('cfgClientId').value = DB.config.clientId || '';
+  document.getElementById('cfgSpreadsheetId').value = DB.config.spreadsheetId || '';
+  document.getElementById('cfgApiKey').value = DB.config.apiKey || '';
+  document.getElementById('cfgSheetCasos').value = DB.config.sheetCasos || 'Casos';
+  document.getElementById('cfgSheetAbogados').value = DB.config.sheetAbogados || 'Abogados';
+  document.getElementById('cfgSheetJuzgados').value = DB.config.sheetJuzgados || 'Juzgados';
+  document.getElementById('cfgDespacho').value = DB.config.despacho || '';
+  document.getElementById('cfgCiudad').value = DB.config.ciudad || '';
+  document.getElementById('cfgAbogadoPrincipal').value = DB.config.abogadoPrincipal || '';
+  document.getElementById('cfgCedulaAbogado').value = DB.config.cedulaAbogado || '';
+  document.getElementById('cfgTarjeta').value = DB.config.tarjeta || '';
+  // show auth state
+  if (oauthToken && currentUser) setAuthState(true);
+}
+
+function saveConfig() {
+  DB.config.clientId = document.getElementById('cfgClientId').value.trim();
+  DB.config.spreadsheetId = document.getElementById('cfgSpreadsheetId').value.trim();
+  DB.config.apiKey = document.getElementById('cfgApiKey').value.trim();
+  DB.config.sheetCasos = document.getElementById('cfgSheetCasos').value.trim() || 'Casos';
+  DB.config.sheetAbogados = document.getElementById('cfgSheetAbogados').value.trim() || 'Abogados';
+  DB.config.sheetJuzgados = document.getElementById('cfgSheetJuzgados').value.trim() || 'Juzgados';
+  saveDB();
+  // Re-init GIS with new client ID
+  if (DB.config.clientId && window.google?.accounts?.oauth2) initGIS();
+  toast('Configuración guardada', 'success');
+}
+
+function saveDespacho() {
+  DB.config.despacho = document.getElementById('cfgDespacho').value.trim();
+  DB.config.ciudad = document.getElementById('cfgCiudad').value.trim().toUpperCase();
+  DB.config.abogadoPrincipal = document.getElementById('cfgAbogadoPrincipal').value.trim().toUpperCase();
+  DB.config.cedulaAbogado = document.getElementById('cfgCedulaAbogado').value.trim();
+  DB.config.tarjeta = document.getElementById('cfgTarjeta').value.trim();
+  saveDB(); toast('Datos del despacho guardados', 'success');
+}
+
+async function testConnection() {
+  if (!oauthToken) { toast('Inicie sesión con Google primero', 'error'); return; }
+  const sid = DB.config.spreadsheetId || document.getElementById('cfgSpreadsheetId').value.trim();
+  if (!sid) { toast('Ingrese el Spreadsheet ID', 'error'); return; }
+  try {
+    const r = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sid}?fields=properties.title`, {
+      headers: { Authorization: 'Bearer ' + oauthToken }
+    });
+    if (!r.ok) { if (r.status===401) setAuthState(false); throw new Error('HTTP ' + r.status); }
+    const d = await r.json();
+    toast('✓ Conectado: ' + (d.properties?.title || 'Spreadsheet'), 'success');
+  } catch(e) {
+    toast('Error: ' + e.message, 'error');
+  }
+}
+
+// ════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════
+loadDB();
+renderDashboard();
+document.getElementById('dashDate').textContent = new Date().toLocaleDateString('es-CO', {
+  weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+});
+
+// Close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('open'); });
+});
+
+// Restore token from sessionStorage if available
+(async function restoreSession() {
+  try {
+    const saved = sessionStorage.getItem('rj_token');
+    if (!saved) return;
+    // Verify token is still valid
+    const r = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+      headers: { Authorization: 'Bearer ' + saved }
+    });
+    if (r.ok) {
+      const d = await r.json();
+      oauthToken = saved;
+      currentUser = { name: d.name || d.email || 'Usuario', email: d.email || '', picture: d.picture || '' };
+      // Update dot and label directly first (setAuthState needs currentUser)
+      document.getElementById('gDriveDot').className = 'gdrive-dot connected';
+      document.getElementById('gDriveLabel').textContent = 'Drive: conectado ✓';
+      setAuthState(true);
+    } else {
+      sessionStorage.removeItem('rj_token');
+      oauthToken = null;
+    }
+  } catch(e) {
+    console.warn('restoreSession error:', e);
+  }
+})();
+
+// Init GIS once library loads (async defer)
+function onGISLoad() {
+  if (DB.config.clientId) initGIS();
+}
+// Poll until google.accounts is available
+(function waitGIS() {
+  if (window.google?.accounts?.oauth2) { onGISLoad(); }
+  else setTimeout(waitGIS, 300);
+})();
+</script>
+</body>
+</html>
